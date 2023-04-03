@@ -1,9 +1,17 @@
-import {StyleSheet, Text, View, ScrollView, BackHandler} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  BackHandler,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useEffect} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Header from './component/Header';
 import Card from './component/Card';
 import Colors from './Utitlies/Colors';
+import Family from './Utitlies/Family';
 
 const Home = ({navigation}) => {
   const Navigation = useNavigation();
@@ -19,13 +27,78 @@ const Home = ({navigation}) => {
   return (
     <>
       <Header navigation={navigation} />
-      <ScrollView style={{flex: 1}}>
-        <View style={{backgroundColor: Colors.lightdark}}>
-          <Text>Important GuideLines</Text>
+      <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
+        <View
+          style={{
+            backgroundColor: Colors.secondary,
+            width: '95%',
+            alignSelf: 'center',
+            marginTop: 10,
+            paddingHorizontal: 10,
+            borderRadius: 10,
+            paddingVertical: 10,
+          }}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontFamily: Family.Regular,
+              color: Colors.light,
+              marginTop: 5,
+              textDecorationLine: 'underline',
+              marginLeft: 10,
+            }}>
+            Important GuideLines:
+          </Text>
+          <View style={{width: '95%', alignSelf: 'center', marginTop: 10}}>
+            <Text
+              style={{
+                fontSize: 13,
+                fontFamily: Family.Medium,
+                color: Colors.light,
+              }}>
+              1. Never be rude to any customer.
+            </Text>
+            <Text
+              style={{
+                fontSize: 13,
+                fontFamily: Family.Medium,
+                color: Colors.light,
+              }}>
+              2. Never share your personal details with any customer.
+            </Text>
+            <Text
+              style={{
+                fontSize: 13,
+                fontFamily: Family.Medium,
+                color: Colors.light,
+              }}>
+              3. Daily online time must be more than 8 hours, on an average,
+            </Text>
+          </View>
+          <TouchableOpacity
+            style={{
+              backgroundColor: Colors.light,
+              paddingVertical: 5,
+              width: '27%',
+              borderRadius: 5,
+              marginTop: 15,
+              marginLeft: 10,
+            }}
+            onPress={() => navigation.navigate('Rules')}>
+            <Text
+              style={{
+                fontSize: 12,
+                fontFamily: Family.Medium,
+                color: Colors.primary,
+                textAlign: 'center',
+              }}>
+              Show More
+            </Text>
+          </TouchableOpacity>
         </View>
         <View
           style={{
-            width: '95%',
+            width: '98%',
             alignSelf: 'center',
             flexDirection: 'row',
             flexWrap: 'wrap',
@@ -40,6 +113,11 @@ const Home = ({navigation}) => {
             name={'Chat'}
             img={require('../assets/images/chat.png')}
             action={() => navigation.navigate('ChatHistory')}
+          />
+          <Card
+            name={'Video Call'}
+            img={require('../assets/images/video-camera.png')}
+            action={() => navigation.navigate('VideoCall')}
           />
           <Card
             name={'Wait List'}

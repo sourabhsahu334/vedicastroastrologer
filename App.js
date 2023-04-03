@@ -18,12 +18,26 @@ import Followers from './src/Followers/Followers';
 import Review from './src/Rating/Review';
 import Profile from './src/Profile/Profile';
 import Trianing from './src/Training/Training';
+import Rules from './src/Rules';
+import ChatScreen from './src/Chat/ChatScreen';
+import VideoCall from './src/Videocall/VideoCall';
+import Colors from './src/Utitlies/Colors';
+import Family from './src/Utitlies/Family';
 
 const App = () => {
   const Stack = createNativeStackNavigator();
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Splash">
+      <Stack.Navigator
+        initialRouteName="Splash"
+        screenOptions={{
+          headerTitleStyle: {
+            fontSize: 16,
+            fontFamily: Family.Medium,
+            color: Colors.dark,
+          },
+          headerTintColor: Colors.primary,
+        }}>
         <Stack.Screen
           name="Home"
           component={Home}
@@ -56,6 +70,9 @@ const App = () => {
         <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="Wallet" component={Wallet} />
         <Stack.Screen name="Trianing" component={Trianing} />
+        <Stack.Screen name="Rules" component={Rules} />
+        <Stack.Screen name="ChatScreen" component={ChatScreen} />
+        <Stack.Screen name="VideoCall" component={VideoCall} />
       </Stack.Navigator>
     </NavigationContainer>
   );
