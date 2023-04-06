@@ -22,7 +22,7 @@ const Login = ({navigation}) => {
 
   const Login = async () => {
     const result = await userLogin(Mobile, Password);
-    console.log(result);
+
     if (result.response.status === 1) {
       navigation.navigate('Home');
       AsyncStorage.setItem('userId', result.response.astrologerId);

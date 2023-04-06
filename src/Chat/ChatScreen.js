@@ -1,38 +1,33 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React, {useState, useCallback, useEffect} from 'react';
+import React, {useState, useCallback, useEffect, useContext} from 'react';
 import {GiftedChat} from 'react-native-gifted-chat';
-import database from '@react-native-firebase/database';
+import firestore from '@react-native-firebase/firestore';
+import {UserAuthContext} from '../Context/UserAuthContext';
 
 const ChatScreen = () => {
   const [messages, setMessages] = useState([]);
+  const {User} = useContext(UserAuthContext);
   useEffect(() => {
-    database()
-      .ref('/Room/10')
-      .orderByChild('_id', 'dsc')
-      .on('value', snapshot => {
-        let Arr = [];
-        snapshot.forEach(value => {
-          Arr.push(value.val());
-        });
-        setMessages(Arr);
+    const querySnapshot = firestore()
+      .collection('Room')
+      .doc('10')
+      .collection('Message')
+      .orderBy('createdAt', 'desc');
+    querySnapshot.onSnapshot(snapshot => {
+      const allMessage = [];
+      snapshot.docs.map(snap => {
+        allMessage.push({...snap.data(), createdAt: new Date()});
       });
+      setMessages(allMessage);
+    });
   }, []);
 
   const onSend = useCallback((messages = []) => {
-    setMessages(previousMessages =>
-      GiftedChat.append(previousMessages, messages),
-    );
-    const {_id, text, createdAt, user} = messages[0];
-    console.log(_id, text, createdAt, user);
-    database()
-      .ref('/Room/10')
-      .push({
-        _id,
-        text,
-        createdAt: createdAt,
-        user,
-      })
-      .then(() => console.log('Data set.'));
+    firestore()
+      .collection('Room')
+      .doc('10')
+      .collection('Message')
+      .add({...messages[0], createdAt: firestore.FieldValue.serverTimestamp()});
   }, []);
 
   return (
@@ -40,7 +35,7 @@ const ChatScreen = () => {
       messages={messages}
       onSend={messages => onSend(messages)}
       user={{
-        _id: 20,
+        _id: User,
       }}
     />
   );
