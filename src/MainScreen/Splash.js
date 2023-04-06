@@ -3,13 +3,24 @@ import React, {useEffect, useState} from 'react';
 import * as Animatable from 'react-native-animatable';
 import Colors from '../Utitlies/Colors';
 import Loader from '../component/Loader';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Splash = ({navigation}) => {
   const [isLoading, setisLoading] = useState(true);
 
+  const checkUser = () => {
+    AsyncStorage.getItem('userId').then(value => {
+      if (value == null) {
+        navigation.navigate('Onboarding');
+      } else {
+        navigation.navigate('Home');
+      }
+    });
+  };
+
   useEffect(() => {
     setTimeout(() => {
-      navigation.navigate('Onboarding');
+      checkUser();
     }, 3000);
   }, []);
 

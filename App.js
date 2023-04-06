@@ -23,58 +23,61 @@ import ChatScreen from './src/Chat/ChatScreen';
 import VideoCall from './src/Videocall/VideoCall';
 import Colors from './src/Utitlies/Colors';
 import Family from './src/Utitlies/Family';
+import {UserAuthContextProvider} from './src/Context/UserAuthContext';
 
 const App = () => {
   const Stack = createNativeStackNavigator();
   return (
-    <NavigationContainer>
-      <Stack.Navigator
-        initialRouteName="Splash"
-        screenOptions={{
-          headerTitleStyle: {
-            fontSize: 16,
-            fontFamily: Family.Medium,
-            color: Colors.dark,
-          },
-          headerTintColor: Colors.primary,
-        }}>
-        <Stack.Screen
-          name="Home"
-          component={Home}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Splash"
-          component={Splash}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="Onboarding"
-          component={Onboarding}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen name="Support" component={Support} />
-        <Stack.Screen name="ChatHistory" component={ChatHistory} />
-        <Stack.Screen name="CallHistory" component={CallHistory} />
-        <Stack.Screen name="Earning" component={Earning} />
-        <Stack.Screen name="Waitlist" component={Waitlist} />
-        <Stack.Screen name="Offers" component={Offers} />
-        <Stack.Screen name="Report" component={Report} />
-        <Stack.Screen name="Followers" component={Followers} />
-        <Stack.Screen name="Review" component={Review} />
-        <Stack.Screen name="Profile" component={Profile} />
-        <Stack.Screen name="Wallet" component={Wallet} />
-        <Stack.Screen name="Trianing" component={Trianing} />
-        <Stack.Screen name="Rules" component={Rules} />
-        <Stack.Screen name="ChatScreen" component={ChatScreen} />
-        <Stack.Screen name="VideoCall" component={VideoCall} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <UserAuthContextProvider>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="Splash"
+          screenOptions={{
+            headerTitleStyle: {
+              fontSize: 16,
+              fontFamily: Family.Medium,
+              color: Colors.dark,
+            },
+            headerTintColor: Colors.primary,
+          }}>
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Splash"
+            component={Splash}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Onboarding"
+            component={Onboarding}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen name="Support" component={Support} />
+          <Stack.Screen name="ChatHistory" component={ChatHistory} />
+          <Stack.Screen name="CallHistory" component={CallHistory} />
+          <Stack.Screen name="Earning" component={Earning} />
+          <Stack.Screen name="Waitlist" component={Waitlist} />
+          <Stack.Screen name="Offers" component={Offers} />
+          <Stack.Screen name="Report" component={Report} />
+          <Stack.Screen name="Followers" component={Followers} />
+          <Stack.Screen name="Review" component={Review} />
+          <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="Wallet" component={Wallet} />
+          <Stack.Screen name="Trianing" component={Trianing} />
+          <Stack.Screen name="Rules" component={Rules} />
+          <Stack.Screen name="ChatScreen" component={ChatScreen} />
+          <Stack.Screen name="VideoCall" component={VideoCall} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </UserAuthContextProvider>
   );
 };
 

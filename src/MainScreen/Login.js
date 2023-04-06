@@ -5,19 +5,30 @@ import {
   Image,
   Dimensions,
   TextInput,
+  Alert,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import * as Animatable from 'react-native-animatable';
 import Family from '../Utitlies/Family';
 import Colors from '../Utitlies/Colors';
 import Button from '../component/Button';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {UserAuthContext} from '../Context/UserAuthContext';
 
 const Login = ({navigation}) => {
   const [Mobile, setMobile] = useState('');
   const [Password, setPassword] = useState('');
+  const {userLogin} = useContext(UserAuthContext);
 
-  const Login = () => {
-    navigation.navigate('Home');
+  const Login = async () => {
+    const result = await userLogin(Mobile, Password);
+    console.log(result);
+    if (result.response.status === 1) {
+      navigation.navigate('Home');
+      AsyncStorage.setItem('userId', result.response.astrologerId);
+    } else {
+      Alert.alert(result.response.message);
+    }
   };
 
   return (
