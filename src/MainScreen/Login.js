@@ -1,12 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Dimensions,
-  TextInput,
-  Alert,
-} from 'react-native';
+import {StyleSheet, Text, View, TextInput, Alert} from 'react-native';
 import React, {useContext, useState} from 'react';
 import * as Animatable from 'react-native-animatable';
 import Family from '../Utitlies/Family';
@@ -14,6 +6,7 @@ import Colors from '../Utitlies/Colors';
 import Button from '../component/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {UserAuthContext} from '../Context/UserAuthContext';
+import {requestUserPermission} from '../firebase_notification';
 
 const Login = ({navigation}) => {
   const [Mobile, setMobile] = useState('');
@@ -21,8 +14,8 @@ const Login = ({navigation}) => {
   const {userLogin} = useContext(UserAuthContext);
 
   const Login = async () => {
-    const result = await userLogin(Mobile, Password);
-
+    const token = await requestUserPermission();
+    const result = await userLogin(Mobile, Password, token);
     if (result.response.status === 1) {
       navigation.navigate('Home');
       AsyncStorage.setItem('userId', result.response.astrologerId);

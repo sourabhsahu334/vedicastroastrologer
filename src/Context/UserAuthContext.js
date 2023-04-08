@@ -11,9 +11,10 @@ const UserAuthContextProvider = ({children}) => {
     getUser();
   }, []);
 
-  function userLogin(mobile, password) {
+  function userLogin(mobile, password, token) {
     return Apicalls(
-      Global.BASE_URL + `login&mobile=${mobile}&password=${password}`,
+      Global.BASE_URL +
+        `login&mobile=${mobile}&password=${password}&deviceId=${token}`,
     );
   }
   function getUser() {

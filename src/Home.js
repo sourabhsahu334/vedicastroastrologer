@@ -5,17 +5,25 @@ import {
   ScrollView,
   BackHandler,
   TouchableOpacity,
+  PermissionsAndroid,
 } from 'react-native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
 import Header from './component/Header';
 import Card from './component/Card';
 import Colors from './Utitlies/Colors';
 import Family from './Utitlies/Family';
+import inAppMessaging from '@react-native-firebase/in-app-messaging';
 
 const Home = ({navigation}) => {
   const Navigation = useNavigation();
+  const [canReceiveMessage, setCanReceiveMessage] = useState(true);
 
+  const allowToReceiveMessage = async isAllowed => {
+    setCanReceiveMessage(isAllowed);
+    // Allow/Disallow user to receive messages
+    await inAppMessaging().setMessagesDisplaySuppressed(isAllowed);
+  };
   useEffect(() => {
     const unsuscribe = Navigation.addListener('beforeRemove', e => {
       e.preventDefault();
