@@ -7,6 +7,8 @@ import Button from '../component/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {UserAuthContext} from '../Context/UserAuthContext';
 import {requestUserPermission} from '../firebase_notification';
+import {getUniqueId} from 'react-native-device-info';
+import OneSignal from 'react-native-onesignal';
 
 const Login = ({navigation}) => {
   const [Mobile, setMobile] = useState('');
@@ -14,8 +16,12 @@ const Login = ({navigation}) => {
   const {userLogin} = useContext(UserAuthContext);
 
   const Login = async () => {
-    const token = await requestUserPermission();
-    const result = await userLogin(Mobile, Password, token);
+    const data = await OneSignal.getDeviceState();
+
+    const player_id = data.userId;
+    // const token = await requestUserPermission();
+    // const token = await getUniqueId();
+    const result = await userLogin(Mobile, Password, player_id);
     if (result.response.status === 1) {
       navigation.navigate('Home');
       AsyncStorage.setItem('userId', result.response.astrologerId);

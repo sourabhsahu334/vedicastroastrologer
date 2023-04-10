@@ -13,17 +13,11 @@ import Header from './component/Header';
 import Card from './component/Card';
 import Colors from './Utitlies/Colors';
 import Family from './Utitlies/Family';
-import inAppMessaging from '@react-native-firebase/in-app-messaging';
+import database from '@react-native-firebase/database';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = ({navigation}) => {
   const Navigation = useNavigation();
-  const [canReceiveMessage, setCanReceiveMessage] = useState(true);
-
-  const allowToReceiveMessage = async isAllowed => {
-    setCanReceiveMessage(isAllowed);
-    // Allow/Disallow user to receive messages
-    await inAppMessaging().setMessagesDisplaySuppressed(isAllowed);
-  };
   useEffect(() => {
     const unsuscribe = Navigation.addListener('beforeRemove', e => {
       e.preventDefault();
@@ -31,6 +25,23 @@ const Home = ({navigation}) => {
     });
     return unsuscribe;
   }, [Navigation]);
+
+  useEffect(() => {
+    AsyncStorage.getItem('userId').then(val => {
+      database()
+        .ref(`/astrologer/${val}`)
+        .on('value', snapshot => {
+          snapshot.forEach(value => {
+            const {userId} = value.val();
+            if (snapshot.val !== null) {
+              navigation.navigate('Accept', {
+                userId: userId,
+              });
+            }
+          });
+        });
+    });
+  }, []);
 
   return (
     <>

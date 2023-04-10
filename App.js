@@ -24,8 +24,39 @@ import VideoCall from './src/Videocall/VideoCall';
 import Colors from './src/Utitlies/Colors';
 import Family from './src/Utitlies/Family';
 import {UserAuthContextProvider} from './src/Context/UserAuthContext';
+import OneSignal from 'react-native-onesignal';
+import Accept from './src/Accept';
 
 const App = () => {
+  // OneSignal Initialization
+  OneSignal.setAppId('f3156d4f-7de2-4c6b-8aaf-79894c9b3f59');
+
+  // promptForPushNotificationsWithUserResponse will show the native iOS or Android notification permission prompt.
+  // We recommend removing the following code and instead using an In-App Message to prompt for notification permission (See step 8)
+  OneSignal.promptForPushNotificationsWithUserResponse(response => {
+    console.log(response);
+  });
+
+  //Method for handling notifications received while app in foreground
+  OneSignal.setNotificationWillShowInForegroundHandler(
+    notificationReceivedEvent => {
+      console.log(
+        'OneSignal: notification will show in foreground:',
+        notificationReceivedEvent,
+      );
+      let notification = notificationReceivedEvent.getNotification();
+      console.log('notification: ', notification);
+      const data = notification.additionalData;
+      console.log('additionalData: ', data);
+      // Complete with null means don't show a notification.
+      notificationReceivedEvent.complete(notification);
+    },
+  );
+
+  //Method for handling notifications opened
+  OneSignal.setNotificationOpenedHandler(notification => {
+    console.log('OneSignal: notification opened:', notification);
+  });
   const Stack = createNativeStackNavigator();
   return (
     <UserAuthContextProvider>
@@ -48,6 +79,11 @@ const App = () => {
           <Stack.Screen
             name="Splash"
             component={Splash}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Accept"
+            component={Accept}
             options={{headerShown: false}}
           />
           <Stack.Screen

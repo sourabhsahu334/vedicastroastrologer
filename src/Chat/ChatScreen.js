@@ -4,13 +4,16 @@ import {GiftedChat} from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore';
 import {UserAuthContext} from '../Context/UserAuthContext';
 
-const ChatScreen = () => {
+const ChatScreen = ({navigation, route}) => {
   const [messages, setMessages] = useState([]);
   const {User} = useContext(UserAuthContext);
+
+  const {RoomId} = route.params;
+
   useEffect(() => {
     const querySnapshot = firestore()
       .collection('Room')
-      .doc('10')
+      .doc(RoomId)
       .collection('Message')
       .orderBy('createdAt', 'desc');
     querySnapshot.onSnapshot(snapshot => {
@@ -25,7 +28,7 @@ const ChatScreen = () => {
   const onSend = useCallback((messages = []) => {
     firestore()
       .collection('Room')
-      .doc('10')
+      .doc(RoomId)
       .collection('Message')
       .add({...messages[0], createdAt: firestore.FieldValue.serverTimestamp()});
   }, []);
