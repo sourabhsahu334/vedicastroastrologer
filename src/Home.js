@@ -15,6 +15,7 @@ import Colors from './Utitlies/Colors';
 import Family from './Utitlies/Family';
 import database from '@react-native-firebase/database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import firestore from '@react-native-firebase/firestore';
 
 const Home = ({navigation}) => {
   const Navigation = useNavigation();
@@ -28,18 +29,25 @@ const Home = ({navigation}) => {
 
   useEffect(() => {
     AsyncStorage.getItem('userId').then(val => {
-      database()
-        .ref(`/astrologer/${val}`)
-        .on('value', snapshot => {
-          snapshot.forEach(value => {
-            const {userId} = value.val();
-            if (snapshot.val !== null) {
-              navigation.navigate('Accept', {
-                userId: userId,
-              });
-            }
-          });
+      const now = firestore.Timestamp.now();
+      const ts = firestore.Timestamp.fromMillis(now.toMillis() - 30000);
+      const querySnapshot = firestore()
+        .collection('astrologer')
+        .doc(val)
+        .collection('connection')
+        .where('createdAt', '>', ts);
+      querySnapshot.onSnapshot(snapshot => {
+        snapshot.docs.map(value => {
+          const {userId, id, AstrologerId} = value.data();
+          if (value.data() !== null) {
+            navigation.navigate('Accept', {
+              userId: userId,
+              astrologerDocumentid: id,
+              AstrologerId: AstrologerId,
+            });
+          }
         });
+      });
     });
   }, []);
 
