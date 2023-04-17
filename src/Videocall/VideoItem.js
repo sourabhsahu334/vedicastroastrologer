@@ -16,25 +16,31 @@ const VideoItem = ({item, navigation}) => {
         justifyContent: 'space-between',
       }}>
       <View>
-        <Text style={{fontSize: 14, fontFamily: Family.Medium}}>
+        <Text
+          style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
           Name: {item.name}
         </Text>
-        <Text style={{fontSize: 14, fontFamily: Family.Medium}}>
+        <Text
+          style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
           Order Id : {item.OrderId}
         </Text>
-        <Text style={{fontSize: 14, fontFamily: Family.Medium}}>
+        <Text
+          style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
           Time : {item.Time}
         </Text>
-        <Text style={{fontSize: 14, fontFamily: Family.Medium}}>
+        <Text
+          style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
           Rate : ₹ {item.rate}/ minute
         </Text>
-        <Text style={{fontSize: 14, fontFamily: Family.Medium}}>
+        <Text
+          style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
           Status : {item.Status}
         </Text>
         <Text
           style={{
             fontSize: 20,
             fontFamily: Family.Medium,
+            color: Colors.gray,
             color: Colors.primary,
             position: 'absolute',
             top: 10,
@@ -61,6 +67,7 @@ const VideoItem = ({item, navigation}) => {
               style={{
                 fontSize: 14,
                 fontFamily: Family.Medium,
+                color: Colors.gray,
                 color: Colors.light,
                 textAlign: 'center',
               }}>
@@ -80,6 +87,7 @@ const VideoItem = ({item, navigation}) => {
               style={{
                 fontSize: 14,
                 fontFamily: Family.Medium,
+                color: Colors.gray,
                 color: Colors.light,
                 textAlign: 'center',
               }}>

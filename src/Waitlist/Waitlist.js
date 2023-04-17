@@ -1,5 +1,12 @@
-import {FlatList, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  Alert,
+  BackHandler,
+} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import Family from '../Utitlies/Family';
 import Colors from '../Utitlies/Colors';
 import WaitItem from './WaitItem';
@@ -16,6 +23,7 @@ const Waitlist = ({navigation}) => {
       totalAmout: 50,
     },
   ]);
+
   return (
     <View style={{flex: 1}}>
       <View style={{width: '95%', alignSelf: 'center', marginVertical: 10}}>

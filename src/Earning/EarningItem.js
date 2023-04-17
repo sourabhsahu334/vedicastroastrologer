@@ -20,10 +20,20 @@ const EarningItem = ({item, naviagtion, index, length}) => {
         marginBottom: length == index + 1 ? 250 : 0,
       }}>
       <View>
-        <Text style={{fontSize: 14, fontFamily: Family.Regular}}>
+        <Text
+          style={{
+            fontSize: 14,
+            fontFamily: Family.Regular,
+            color: Colors.gray,
+          }}>
           User Name: {item.Name}
         </Text>
-        <Text style={{fontSize: 14, fontFamily: Family.Regular}}>
+        <Text
+          style={{
+            fontSize: 14,
+            fontFamily: Family.Regular,
+            color: Colors.gray,
+          }}>
           Trans. Id : {item.transId}
         </Text>
       </View>

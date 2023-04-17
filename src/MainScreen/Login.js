@@ -50,11 +50,17 @@ const Login = ({navigation}) => {
             marginVertical: 30,
             fontSize: 16,
             fontFamily: Family.Regular,
+            color: Colors.gray,
           }}>
           Sign into your account
         </Text>
         <View style={{marginVertical: 5}}>
-          <Text style={{fontSize: 13, fontFamily: Family.Regular}}>
+          <Text
+            style={{
+              fontSize: 13,
+              fontFamily: Family.Regular,
+              color: Colors.gray,
+            }}>
             Mobile Number
           </Text>
           <View
@@ -64,17 +70,24 @@ const Login = ({navigation}) => {
               flexDirection: 'row',
               alignItems: 'center',
             }}>
-            <Text>+91 </Text>
+            <Text style={{color: Colors.gray}}>+91 </Text>
             <TextInput
               placeholder="Enter your Mobile Number"
               value={Mobile}
               onChangeText={setMobile}
               keyboardType="number-pad"
+              style={{color: Colors.gray}}
+              placeholderTextColor={Colors.gray}
             />
           </View>
         </View>
         <View style={{marginVertical: 5}}>
-          <Text style={{fontSize: 13, fontFamily: Family.Regular}}>
+          <Text
+            style={{
+              fontSize: 13,
+              fontFamily: Family.Regular,
+              color: Colors.gray,
+            }}>
             Password
           </Text>
           <TextInput
@@ -82,10 +95,12 @@ const Login = ({navigation}) => {
               paddingVertical: 10,
               borderBottomColor: Colors.primary,
               borderBottomWidth: 1,
+              color: Colors.gray,
             }}
             placeholder="Enter your Password"
             value={Password}
             onChangeText={setPassword}
+            placeholderTextColor={Colors.gray}
           />
         </View>
         <View style={{marginVertical: 20}}>

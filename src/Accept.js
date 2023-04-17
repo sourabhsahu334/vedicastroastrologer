@@ -17,6 +17,7 @@ const Accept = ({navigation, route}) => {
   const [Accepted, setAccepted] = useState(false);
   const {userId, astrologerDocumentid, AstrologerId} = route.params;
   const [RoomId, setRoomId] = useState(0);
+  const [Declined, setDeclined] = useState(false);
   const [Data, setData] = useState([]);
   const Navigation = useNavigation();
 
@@ -56,12 +57,12 @@ const Accept = ({navigation, route}) => {
     });
   };
 
-  useEffect(() => {
-    const unsuscribe = Navigation.addListener('beforeRemove', e => {
-      Reject();
-    });
-    return unsuscribe;
-  }, [Navigation]);
+  // useEffect(() => {
+  //   const unsuscribe = Navigation.addListener('beforeRemove', e => {
+  //     Reject();
+  //   });
+  //   return unsuscribe;
+  // }, [Navigation]);
 
   useEffect(() => {
     firestore()
@@ -69,9 +70,12 @@ const Accept = ({navigation, route}) => {
       .doc(RoomId)
       .onSnapshot(doc => {
         if (doc.data() !== undefined) {
-          const {RoomId} = doc.data();
+          const {RoomId, AstrologerId, userId, chatStatus} = doc.data();
           navigation.navigate('ChatScreen', {
-            RoomId,
+            chatStatus: chatStatus,
+            RoomId: RoomId,
+            AstrologerId: AstrologerId,
+            userId: userId,
           });
         }
       });
@@ -93,7 +97,13 @@ const Accept = ({navigation, route}) => {
     <>
       <View
         style={{flex: 1, alignItems: 'center', backgroundColor: Colors.light}}>
-        <Text style={{fontSize: 20, marginTop: 50, fontFamily: Family.Bold}}>
+        <Text
+          style={{
+            fontSize: 20,
+            marginTop: 50,
+            fontFamily: Family.Bold,
+            color: Colors.gray,
+          }}>
           {Data.name}
         </Text>
         <View>
@@ -114,8 +124,17 @@ const Accept = ({navigation, route}) => {
           />
         </View>
         <Text
-          style={{fontSize: 20, marginTop: 50, fontFamily: Family.SemiBold}}>
-          {Accepted ? 'Ringing......' : 'Requested for chat......'}
+          style={{
+            fontSize: 20,
+            marginTop: 50,
+            fontFamily: Family.SemiBold,
+            color: Colors.gray,
+          }}>
+          {Accepted
+            ? 'Ringing......'
+              ? Declined
+              : 'Call Declined'
+            : 'Incoming Chat Request'}
         </Text>
       </View>
 
@@ -126,20 +145,32 @@ const Accept = ({navigation, route}) => {
           position: 'absolute',
           bottom: 40,
           width: '100%',
-          paddingHorizontal: 50,
+          paddingHorizontal: 30,
         }}>
-        <TouchableOpacity onPress={Reject}>
-          <Image
-            source={require('../assets/images/red-call.png')}
-            style={{width: 60, height: 60, transform: [{rotate: '137deg'}]}}
-          />
+        <TouchableOpacity
+          onPress={Reject}
+          style={{
+            backgroundColor: 'red',
+            paddingVertical: 15,
+            paddingHorizontal: 35,
+            borderRadius: 35,
+          }}>
+          <Text style={{color: '#fff', fontSize: 14, fontWeight: '600'}}>
+            Decline
+          </Text>
         </TouchableOpacity>
         {Accepted ? null : (
-          <TouchableOpacity onPress={Accept}>
-            <Image
-              source={require('../assets/images/phone-call.png')}
-              style={{width: 60, height: 60}}
-            />
+          <TouchableOpacity
+            onPress={Accept}
+            style={{
+              backgroundColor: 'green',
+              paddingVertical: 15,
+              paddingHorizontal: 35,
+              borderRadius: 35,
+            }}>
+            <Text style={{color: '#fff', fontSize: 14, fontWeight: '600'}}>
+              Accept
+            </Text>
           </TouchableOpacity>
         )}
       </View>

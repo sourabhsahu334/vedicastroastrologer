@@ -26,6 +26,7 @@ import Family from './src/Utitlies/Family';
 import {UserAuthContextProvider} from './src/Context/UserAuthContext';
 import OneSignal from 'react-native-onesignal';
 import Accept from './src/Accept';
+import EditProfile from './src/Profile/EditProfile';
 
 const App = () => {
   // OneSignal Initialization
@@ -109,7 +110,12 @@ const App = () => {
           <Stack.Screen name="Wallet" component={Wallet} />
           <Stack.Screen name="Trianing" component={Trianing} />
           <Stack.Screen name="Rules" component={Rules} />
-          <Stack.Screen name="ChatScreen" component={ChatScreen} />
+          <Stack.Screen name="EditProfile" component={EditProfile} />
+          <Stack.Screen
+            name="ChatScreen"
+            component={ChatScreen}
+            options={{headerShown: false}}
+          />
           <Stack.Screen name="VideoCall" component={VideoCall} />
         </Stack.Navigator>
       </NavigationContainer>

@@ -21,7 +21,7 @@ const Splash = ({navigation}) => {
   useEffect(() => {
     setTimeout(() => {
       checkUser();
-    }, 3000);
+    }, 2000);
   }, []);
 
   return (

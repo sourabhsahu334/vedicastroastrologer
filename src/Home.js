@@ -13,7 +13,6 @@ import Header from './component/Header';
 import Card from './component/Card';
 import Colors from './Utitlies/Colors';
 import Family from './Utitlies/Family';
-import database from '@react-native-firebase/database';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 

@@ -47,6 +47,7 @@ const Rules = () => {
                   fontSize: 14,
                   fontFamily: Family.Regular,
                   marginTop: 5,
+                  color: Colors.dark,
                 }}>
                 {value}
               </Text>

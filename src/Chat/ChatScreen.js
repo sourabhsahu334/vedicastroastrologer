@@ -1,14 +1,27 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  Modal,
+} from 'react-native';
 import React, {useState, useCallback, useEffect, useContext} from 'react';
 import {GiftedChat, InputToolbar} from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore';
 import {UserAuthContext} from '../Context/UserAuthContext';
+import Colors from '../Utitlies/Colors';
+import {ArrowLeftIcon} from 'react-native-heroicons/solid';
+import Family from '../Utitlies/Family';
+import {useNavigation} from '@react-navigation/native';
 
 const ChatScreen = ({navigation, route}) => {
   const [messages, setMessages] = useState([]);
   const {User} = useContext(UserAuthContext);
   const [isInputDisabled, setisInputDisabled] = useState(false);
-  const {RoomId} = route.params;
+  const [modal, setmodal] = useState(false);
+  const {RoomId, AstrologerId, userId, chatStatus} = route.params;
+  const Navigation = useNavigation();
 
   useEffect(() => {
     const querySnapshot = firestore()
@@ -24,6 +37,13 @@ const ChatScreen = ({navigation, route}) => {
       setMessages(allMessage);
     });
   }, []);
+
+  // useEffect(() => {
+  //   const unsuscribe = Navigation.addListener('beforeRemove', e => {
+  //     e.preventDefault();
+  //   });
+  //   return unsuscribe;
+  // }, [Navigation]);
 
   const onSend = useCallback((messages = []) => {
     firestore()
@@ -42,6 +62,9 @@ const ChatScreen = ({navigation, route}) => {
           const {chatStatus} = documentSnapshot.data();
           if (chatStatus == 'completed') {
             setisInputDisabled(true);
+            setTimeout(() => {
+              setmodal(true);
+            }, 3000);
           }
         }
       });
@@ -55,6 +78,8 @@ const ChatScreen = ({navigation, route}) => {
           backgroundColor: '#fff',
           borderRadius: 10,
           paddingHorizontal: 10,
+          marginTop: -10,
+          padding: 10,
         }}>
         <Text style={{color: 'red', textAlign: 'justify', fontSize: 13}}>
           This is an automated messages. Chat has been ended due to Customer
@@ -67,17 +92,151 @@ const ChatScreen = ({navigation, route}) => {
   };
 
   return (
-    <GiftedChat
-      messages={messages}
-      onSend={messages => onSend(messages)}
-      user={{
-        _id: User,
-      }}
-      renderInputToolbar={renderInputToolbar}
-    />
+    <>
+      <View
+        style={{
+          backgroundColor: Colors.light,
+          padding: 10,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+          }}>
+          <TouchableOpacity onPress={() => navigation.navigate('Home')}>
+            <ArrowLeftIcon color={Colors.dark} size={24} />
+          </TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 16,
+              color: Colors.gray,
+              marginLeft: 10,
+              fontFamily: Family.Medium,
+            }}>
+            ChatScreen
+          </Text>
+        </View>
+        <TouchableOpacity
+          style={{
+            backgroundColor: Colors.primary,
+            paddingHorizontal: 10,
+            paddingVertical: 5,
+            borderRadius: 15,
+            justifyContent: 'center',
+          }}
+          onPress={() => console.log('Hello')}>
+          <Text
+            style={{
+              fontSize: 12,
+              textAlign: 'center',
+              fontFamily: Family.Medium,
+            }}>
+            View Kundli
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <GiftedChat
+        messages={messages}
+        onSend={messages => onSend(messages)}
+        user={{
+          _id: User,
+        }}
+        renderInputToolbar={renderInputToolbar}
+      />
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modal}
+        onRequestClose={() => {}}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <TouchableOpacity
+              onPress={() => {
+                setmodal(false);
+                setRating(0);
+              }}
+              style={{position: 'absolute', top: 5, right: 15}}>
+              <Text
+                style={{
+                  color: Colors.gray,
+                  fontSize: 20,
+                  fontWeight: '700',
+                }}>
+                x
+              </Text>
+            </TouchableOpacity>
+            <Text
+              style={{
+                color: Colors.gray,
+                fontSize: 12,
+                fontWeight: '700',
+                marginVertical: 10,
+              }}>
+              Your Chat Session has been Completed !
+            </Text>
+            <Image
+              source={{
+                uri: 'https://images.pexels.com/photos/1557843/pexels-photo-1557843.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
+              }}
+              style={{width: 70, height: 70, borderRadius: 35}}
+            />
+            <Text
+              style={{
+                color: Colors.gray,
+                userfontSize: 15,
+                fontWeight: '700',
+                marginVertical: 10,
+              }}>
+              Ashutosh Tiwari
+            </Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Waitlist');
+              }}
+              style={{
+                backgroundColor: Colors.primary,
+                width: '100%',
+                paddingVertical: 15,
+                borderRadius: 30,
+                justifyContent: 'center',
+                flexDirection: 'row',
+              }}>
+              <Text
+                style={{
+                  fontSize: 13,
+                  fontWeight: '700',
+                  color: '#fff',
+                }}>
+                Check Waitlist
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </>
   );
 };
 
 export default ChatScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    marginHorizontal: 15,
+    padding: 15,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+  },
+});

@@ -134,7 +134,8 @@ const Earning = ({navigation}) => {
       </View>
 
       <View style={{width: '95%', alignSelf: 'center'}}>
-        <Text style={{fontSize: 16, fontFamily: Family.Medium}}>
+        <Text
+          style={{fontSize: 16, fontFamily: Family.Medium, color: Colors.gray}}>
           Recent Transactions :
         </Text>
         <FlatList
