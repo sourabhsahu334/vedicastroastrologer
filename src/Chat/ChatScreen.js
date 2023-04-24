@@ -7,7 +7,7 @@ import {
   Modal,
 } from 'react-native';
 import React, {useState, useCallback, useEffect, useContext} from 'react';
-import {GiftedChat, InputToolbar} from 'react-native-gifted-chat';
+import {GiftedChat, InputToolbar, Bubble} from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore';
 import {UserAuthContext} from '../Context/UserAuthContext';
 import Colors from '../Utitlies/Colors';
@@ -20,7 +20,7 @@ const ChatScreen = ({navigation, route}) => {
   const {User} = useContext(UserAuthContext);
   const [isInputDisabled, setisInputDisabled] = useState(false);
   const [modal, setmodal] = useState(false);
-  const {RoomId, AstrologerId, userId, chatStatus} = route.params;
+  const {RoomId} = route.params;
   const Navigation = useNavigation();
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const ChatScreen = ({navigation, route}) => {
 
   // useEffect(() => {
   //   const unsuscribe = Navigation.addListener('beforeRemove', e => {
-  //     e.preventDefault();
+  //     e.preventDefault();u
   //   });
   //   return unsuscribe;
   // }, [Navigation]);
@@ -145,6 +145,21 @@ const ChatScreen = ({navigation, route}) => {
           _id: User,
         }}
         renderInputToolbar={renderInputToolbar}
+        renderBubble={props => {
+          return (
+            <Bubble
+              {...props}
+              wrapperStyle={{
+                right: {
+                  backgroundColor: Colors.primary,
+                },
+                left: {
+                  backgroundColor: Colors.light,
+                },
+              }}
+            />
+          );
+        }}
       />
       <Modal
         animationType="slide"
@@ -156,7 +171,6 @@ const ChatScreen = ({navigation, route}) => {
             <TouchableOpacity
               onPress={() => {
                 setmodal(false);
-                setRating(0);
               }}
               style={{position: 'absolute', top: 5, right: 15}}>
               <Text
@@ -186,7 +200,7 @@ const ChatScreen = ({navigation, route}) => {
             <Text
               style={{
                 color: Colors.gray,
-                userfontSize: 15,
+                fontSize: 15,
                 fontWeight: '700',
                 marginVertical: 10,
               }}>
@@ -195,6 +209,7 @@ const ChatScreen = ({navigation, route}) => {
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('Waitlist');
+                setmodal(false);
               }}
               style={{
                 backgroundColor: Colors.primary,

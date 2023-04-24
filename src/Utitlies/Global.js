@@ -1,5 +1,5 @@
 const Global = {
-  BASE_URL: 'https://sellpe.in/astro/api/astrologer.php?method=',
+  BASE_URL: 'https://astrowisdom.in/api/astrologer.php?method=',
 };
 
 export default Global;

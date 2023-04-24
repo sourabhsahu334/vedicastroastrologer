@@ -13,6 +13,7 @@ const ChatItem = ({item, navigation}) => {
         shadowOffset: 5,
         elevation: 5,
         flexDirection: 'row',
+        marginVertical: 10,
         justifyContent: 'space-between',
       }}>
       <View>
@@ -22,11 +23,11 @@ const ChatItem = ({item, navigation}) => {
         </Text>
         <Text
           style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
-          Order Id : {item.OrderId}
+          Order Id : {item.orderId}
         </Text>
         <Text
           style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
-          Time : {item.Time}
+          Time : {item.time}
         </Text>
         <Text
           style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
@@ -34,7 +35,7 @@ const ChatItem = ({item, navigation}) => {
         </Text>
         <Text
           style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
-          Status : {item.Status}
+          Status : {item.status}
         </Text>
         <Text
           style={{
@@ -46,7 +47,7 @@ const ChatItem = ({item, navigation}) => {
             top: 10,
             right: 30,
           }}>
-          ₹ {item.totalAmout}
+          ₹ {item.total}
         </Text>
         <View
           style={{
@@ -62,7 +63,7 @@ const ChatItem = ({item, navigation}) => {
               borderRadius: 5,
               marginTop: 15,
             }}
-            onPress={() => navigation.navigate('ChatScreen')}>
+            onPress={() => navigation.navigate('')}>
             <Text
               style={{
                 fontSize: 14,
@@ -82,7 +83,11 @@ const ChatItem = ({item, navigation}) => {
               borderRadius: 5,
               marginTop: 15,
             }}
-            onPress={() => navigation.navigate('ChatScreen')}>
+            onPress={() =>
+              navigation.navigate('ChatScreen', {
+                RoomId: item.roomId,
+              })
+            }>
             <Text
               style={{
                 fontSize: 14,
@@ -91,7 +96,7 @@ const ChatItem = ({item, navigation}) => {
                 color: Colors.light,
                 textAlign: 'center',
               }}>
-              Open Chat
+              View Messages
             </Text>
           </TouchableOpacity>
         </View>

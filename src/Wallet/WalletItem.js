@@ -12,7 +12,6 @@ const WalletItem = ({item, naviagtion, index, length}) => {
         alignItems: 'center',
         paddingHorizontal: 10,
         paddingVertical: 15,
-        marginTop: 10,
         backgroundColor: Colors.light,
         elevation: 5,
         shadowOffset: 2,
@@ -23,10 +22,18 @@ const WalletItem = ({item, naviagtion, index, length}) => {
         <Text
           style={{
             fontSize: 14,
-            fontFamily: Family.Regular,
+            fontFamily: Family.Medium,
+            color: Colors.primary,
+          }}>
+          {item.remark}
+        </Text>
+        <Text
+          style={{
+            fontSize: 14,
+            fontFamily: Family.Medium,
             color: Colors.gray,
           }}>
-          User Name: {item.Name}
+          Date : {item.date}
         </Text>
         <Text
           style={{
@@ -34,7 +41,7 @@ const WalletItem = ({item, naviagtion, index, length}) => {
             fontFamily: Family.Regular,
             color: Colors.gray,
           }}>
-          Trans. Id : {item.transId}
+          Trans. Id : {item.tnx}
         </Text>
       </View>
       <Text
@@ -43,7 +50,7 @@ const WalletItem = ({item, naviagtion, index, length}) => {
           fontFamily: Family.Medium,
           color: Colors.secprimary,
         }}>
-        - ₹ {item.Earning}
+        {item.type == 'credit' ? '+ ' : ' -'} ₹ {item.amount}
       </Text>
     </View>
   );

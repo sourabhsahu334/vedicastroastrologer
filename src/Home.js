@@ -26,26 +26,37 @@ const Home = ({navigation}) => {
     return unsuscribe;
   }, [Navigation]);
 
-  useEffect(() => {
-    AsyncStorage.getItem('userId').then(val => {
-      const now = firestore.Timestamp.now();
-      const ts = firestore.Timestamp.fromMillis(now.toMillis() - 30000);
-      const querySnapshot = firestore()
-        .collection('astrologer')
-        .doc(val)
-        .collection('connection')
-        .where('createdAt', '>', ts);
-      querySnapshot.onSnapshot(snapshot => {
-        snapshot.docs.map(value => {
-          const {userId, id, AstrologerId} = value.data();
-          if (value.data() !== null) {
-            navigation.navigate('Accept', {
-              userId: userId,
-              astrologerDocumentid: id,
-              AstrologerId: AstrologerId,
+  useEffect(async () => {
+    fetch(
+      `https://astrowisdom.in/api/astrologer.php?method=checkAvability&astrologerId=1`,
+    ).then(response => {
+      response.json().then(parsedData => {
+        console.log('waittime', typeof parsedData.response.waitTime);
+        if (parsedData.response.waitTime == 0) {
+          // if (true) {
+          AsyncStorage.getItem('userId').then(val => {
+            const now = firestore.Timestamp.now();
+            const ts = firestore.Timestamp.fromMillis(now.toMillis() - 30000);
+            const querySnapshot = firestore()
+              .collection('astrologer')
+              .doc(val)
+              .collection('connection')
+              .where('createdAt', '>', ts);
+            querySnapshot.onSnapshot(snapshot => {
+              snapshot.docs.map(value => {
+                const {userId, id, AstrologerId, RoomId} = value.data();
+                if (value.data() !== null) {
+                  navigation.navigate('Accept', {
+                    userId: userId,
+                    astrologerDocumentid: id,
+                    AstrologerId: AstrologerId,
+                    RoomId: RoomId,
+                  });
+                }
+              });
             });
-          }
-        });
+          });
+        }
       });
     });
   }, []);
@@ -140,11 +151,11 @@ const Home = ({navigation}) => {
             img={require('../assets/images/chat.png')}
             action={() => navigation.navigate('ChatHistory')}
           />
-          <Card
+          {/* <Card
             name={'Video Call'}
             img={require('../assets/images/video-camera.png')}
             action={() => navigation.navigate('VideoCall')}
-          />
+          /> */}
           <Card
             name={'Wait List'}
             img={require('../assets/images/waiting.png')}

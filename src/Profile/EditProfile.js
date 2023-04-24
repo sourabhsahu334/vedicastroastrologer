@@ -1,19 +1,48 @@
-import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  PermissionsAndroid,
+  TextInput,
+  ScrollView,
+  Alert,
+} from 'react-native';
 import React, {useState, useContext, useEffect} from 'react';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {UserAuthContext} from '../Context/UserAuthContext';
+import Global from '../Utitlies/Global';
+import Family from '../Utitlies/Family';
+import Colors from '../Utitlies/Colors';
+import Button from '../component/Button';
+import Loader from '../component/Loader';
 
 const EditProfile = () => {
   const [ProfilePhotoUrl, setProfilePhotoUrl] = useState('');
-
-  const User = useContext(UserAuthContext);
+  const [Education, setEducation] = useState('');
+  const [Website, setWebsite] = useState('');
+  const [Youtube, setYoutube] = useState('');
+  const [Instagram, setInstagram] = useState('');
+  const [University, setUniversity] = useState('');
+  const [Description, setDescription] = useState('');
+  const {User} = useContext(UserAuthContext);
+  const [Loading, setLoading] = useState(false);
 
   const getUserPorfile = async () => {
+    setLoading(true);
     const response = await fetch(
-      Global.BASE_URL + `myProfile&astrologerId=${1}`,
+      Global.BASE_URL + `myProfile&astrologerId=${User}`,
     );
     const data = await response.json();
-    setData(data.response);
+    setProfilePhotoUrl(data.response.photo);
+    setEducation(data.response.education);
+    setUniversity(data.response.university);
+    setWebsite(data.response.website);
+    setInstagram(data.response.instagram);
+    setYoutube(data.response.youtube);
+    setDescription(data.response.description);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -35,22 +64,207 @@ const EditProfile = () => {
       setProfilePhotoUrl(result.assets[0].uri);
     }
   };
+  const Submit = async () => {
+    const response = await fetch(
+      Global.BASE_URL +
+        `updateProfile&education=${Education}&university=${University}&youtube=${Youtube}&instagram=${Instagram}&website=${Website}&astrologerId=${User}&description=${Description}`,
+    );
+    const data = await response.json();
+    Alert.alert(data.message);
+  };
 
   return (
-    <View style={{flex: 1}}>
-      <Image
-        source={{uri: ''}}
-        style={{
-          width: 70,
-          height: 70,
-          borderRadius: 35,
-          resizeMode: 'cover',
-        }}
-      />
-      <TouchableOpacity>
-        <Text>Select Photo</Text>
-      </TouchableOpacity>
-    </View>
+    <>
+      {Loading ? (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Loader isLoading={Loading} />
+        </View>
+      ) : (
+        <ScrollView ScrollView style={{flex: 1}}>
+          {ProfilePhotoUrl == '' ? null : (
+            <Image
+              source={{uri: ProfilePhotoUrl}}
+              style={{
+                width: 100,
+                height: 100,
+                borderRadius: 50,
+                resizeMode: 'cover',
+                alignSelf: 'center',
+                marginTop: 10,
+              }}
+            />
+          )}
+          <TouchableOpacity onPress={ProfileImagePicker}>
+            <Text
+              style={{
+                textAlign: 'center',
+                marginTop: 5,
+                fontFamily: Family.Medium,
+                color: Colors.gray,
+              }}>
+              Select Photo
+            </Text>
+          </TouchableOpacity>
+
+          <View
+            style={{
+              backgroundColor: Colors.light,
+              padding: 15,
+              borderRadius: 10,
+              width: '95%',
+              alignSelf: 'center',
+              marginVertical: 15,
+            }}>
+            <View>
+              <Text
+                style={{
+                  marginVertical: 5,
+                  fontFamily: Family.Medium,
+                  color: Colors.gray,
+                }}>
+                Education
+              </Text>
+              <TextInput
+                placeholder="Enter your Qualification"
+                style={{
+                  borderWidth: 1,
+                  fontSize: 14,
+                  color: Colors.gray,
+                  borderRadius: 5,
+                  paddingHorizontal: 15,
+                }}
+                value={Education}
+                onChangeText={setEducation}
+                placeholderTextColor={Colors.gray}
+              />
+            </View>
+            <View>
+              <Text
+                style={{
+                  marginVertical: 5,
+                  fontFamily: Family.Medium,
+                  color: Colors.gray,
+                }}>
+                University
+              </Text>
+              <TextInput
+                placeholder="Enter your name of University"
+                style={{
+                  borderWidth: 1,
+                  fontSize: 14,
+                  color: Colors.gray,
+                  borderRadius: 5,
+                  paddingHorizontal: 15,
+                }}
+                value={University}
+                onChangeText={setUniversity}
+                placeholderTextColor={Colors.gray}
+              />
+            </View>
+            <View>
+              <Text
+                style={{
+                  marginVertical: 5,
+                  fontFamily: Family.Medium,
+                  color: Colors.gray,
+                }}>
+                Website
+              </Text>
+              <TextInput
+                placeholder="Enter your website Link"
+                style={{
+                  borderWidth: 1,
+                  fontSize: 14,
+                  color: Colors.gray,
+                  borderRadius: 5,
+                  paddingHorizontal: 15,
+                }}
+                value={Website}
+                onChangeText={setWebsite}
+                placeholderTextColor={Colors.gray}
+              />
+            </View>
+            <View>
+              <Text
+                style={{
+                  marginVertical: 5,
+                  fontFamily: Family.Medium,
+                  color: Colors.gray,
+                }}>
+                Youtube
+              </Text>
+              <TextInput
+                placeholder="Enter your youtube Link"
+                style={{
+                  borderWidth: 1,
+                  fontSize: 14,
+                  color: Colors.gray,
+                  borderRadius: 5,
+                  paddingHorizontal: 15,
+                }}
+                value={Youtube}
+                onChangeText={setYoutube}
+                placeholderTextColor={Colors.gray}
+              />
+            </View>
+            <View>
+              <Text
+                style={{
+                  marginVertical: 5,
+                  fontFamily: Family.Medium,
+                  color: Colors.gray,
+                }}>
+                Instagram
+              </Text>
+              <TextInput
+                placeholder="Enter your Instagram Link"
+                style={{
+                  borderWidth: 1,
+                  fontSize: 14,
+                  color: Colors.gray,
+                  borderRadius: 5,
+                  paddingHorizontal: 15,
+                }}
+                placeholderTextColor={Colors.gray}
+                onChangeText={setInstagram}
+                value={Instagram}
+              />
+            </View>
+            <View>
+              <Text
+                style={{
+                  marginVertical: 5,
+                  fontFamily: Family.Medium,
+                  color: Colors.gray,
+                }}>
+                Description
+              </Text>
+              <View style={{borderWidth: 1, borderRadius: 5, minHeight: 100}}>
+                <TextInput
+                  placeholder="Write about your self .........."
+                  style={{
+                    fontSize: 14,
+                    color: Colors.gray,
+                    paddingHorizontal: 15,
+                  }}
+                  placeholderTextColor={Colors.gray}
+                  onChangeText={setDescription}
+                  value={Description}
+                />
+              </View>
+            </View>
+            <View style={{marginTop: 20}}>
+              <Button action={Submit} name={'Update Profile'} />
+            </View>
+          </View>
+        </ScrollView>
+      )}
+    </>
   );
 };
 

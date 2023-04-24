@@ -1,9 +1,58 @@
-import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
-import React from 'react';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  ToastAndroid,
+} from 'react-native';
+import React, {useContext} from 'react';
 import Colors from '../Utitlies/Colors';
 import Family from '../Utitlies/Family';
+import Global from '../Utitlies/Global';
+import {UserAuthContext} from '../Context/UserAuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import firestore from '@react-native-firebase/firestore';
 
-const WaitItem = ({item, navigation}) => {
+const WaitItem = ({item, navigation, getDoucumentId, getWaitList}) => {
+  const {User} = useContext(UserAuthContext);
+
+  const Reject = async chatId => {
+    const response = await fetch(
+      Global.BASE_URL + `rejectWaitlist&chatId=${chatId}&astrologerId=${User}`,
+    );
+    const data = await response.json();
+    if (data.response.status == 1) {
+      ToastAndroid.show('Request has been declined.', ToastAndroid.SHORT);
+    }
+    getWaitList();
+  };
+
+  // const onaccept = value => {
+  //   AsyncStorage.getItem('userId').then(val => {
+  //     const now = firestore.Timestamp.now();
+  //     const ts = firestore.Timestamp.fromMillis(now.toMillis() - 30000);
+  //     const querySnapshot = firestore()
+  //       .collection('astrologer')
+  //       .doc(val)
+  //       .collection('connection')
+  //       .where('createdAt', '>', ts);
+  //     querySnapshot.onSnapshot(snapshot => {
+  //       snapshot.docs.map(value => {
+  //         const {userId, id, AstrologerId, RoomId} = value.data();
+  //         if (value.data() !== null) {
+  //           navigation.navigate('Accept', {
+  //             userId: value,
+  //             astrologerDocumentid: id,
+  //             AstrologerId: AstrologerId,
+  //             RoomId: RoomId,
+  //           });
+  //         }
+  //       });
+  //     });
+  //   });
+  // };
+
   return (
     <View
       style={{
@@ -14,6 +63,7 @@ const WaitItem = ({item, navigation}) => {
         elevation: 5,
         flexDirection: 'row',
         justifyContent: 'space-between',
+        marginVertical: 5,
       }}>
       <View>
         <Text
@@ -22,19 +72,11 @@ const WaitItem = ({item, navigation}) => {
         </Text>
         <Text
           style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
-          Order Id : {item.OrderId}
+          Time : {item.date}
         </Text>
         <Text
           style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
-          Time : {item.Time}
-        </Text>
-        <Text
-          style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
-          Rate : ₹ {item.rate}/ minute
-        </Text>
-        <Text
-          style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
-          Status : {item.Status}
+          Status : {item.status}
         </Text>
         <View
           style={{
@@ -65,7 +107,7 @@ const WaitItem = ({item, navigation}) => {
               borderRadius: 5,
               marginTop: 15,
             }}
-            onPress={() => navigation.navigate('ChatScreen')}>
+            onPress={() => Reject(item.chatId)}>
             <Text
               style={{
                 fontSize: 14,
@@ -74,7 +116,7 @@ const WaitItem = ({item, navigation}) => {
                 color: Colors.light,
                 textAlign: 'center',
               }}>
-              Open Kundli
+              Decline
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -85,7 +127,10 @@ const WaitItem = ({item, navigation}) => {
               borderRadius: 5,
               marginTop: 15,
             }}
-            onPress={() => navigation.navigate('ChatScreen')}>
+            onPress={() => {
+              getDoucumentId(item.userId);
+              // onaccept(item.userId);
+            }}>
             <Text
               style={{
                 fontSize: 14,

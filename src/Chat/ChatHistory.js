@@ -1,32 +1,55 @@
 import {FlatList, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
-import Family from '../Utitlies/Family';
+import React, {useState, useContext, useEffect} from 'react';
 import ChatItem from './ChatItem';
-import Colors from '../Utitlies/Colors';
+import Global from '../Utitlies/Global';
+import {UserAuthContext} from '../Context/UserAuthContext';
+import Nodatafound from '../component/Nodatafound';
+import Loader from '../component/Loader';
 
 const ChatHistory = ({navigation}) => {
-  const [Data, setData] = useState([
-    {
-      name: 'Vishal',
-      id: 2,
-      Time: '03/04/2022',
-      OrderId: 'txn000' + Math.floor(Math.random() * 100000),
-      rate: '6.60',
-      Status: 'Progress',
-      totalAmout: 50,
-    },
-  ]);
+  const {User} = useContext(UserAuthContext);
+  const [Loading, setLoading] = useState(false);
+
+  const getChatHistory = async () => {
+    setLoading(true);
+    const response = await fetch(
+      Global.BASE_URL + `chatHistory&astrologerId=${User}`,
+    );
+    const data = await response.json();
+    setData(data.response);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getChatHistory();
+  }, []);
+
+  const [Data, setData] = useState([]);
   return (
-    <View style={{flex: 1}}>
-      <View style={{width: '95%', alignSelf: 'center', marginVertical: 10}}>
-        <FlatList
-          data={Data}
-          renderItem={({item, index}) => {
-            return <ChatItem item={item} navigation={navigation} />;
-          }}
-        />
-      </View>
-    </View>
+    <>
+      {Loading ? (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Loader isLoading={Loading} />
+        </View>
+      ) : (
+        <View style={{flex: 1}}>
+          <View style={{width: '95%', alignSelf: 'center', marginVertical: 0}}>
+            <FlatList
+              data={Data}
+              ListEmptyComponent={<Nodatafound />}
+              renderItem={({item, index}) => {
+                return <ChatItem item={item} navigation={navigation} />;
+              }}
+            />
+          </View>
+        </View>
+      )}
+    </>
   );
 };
 
