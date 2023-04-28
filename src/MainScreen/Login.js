@@ -19,8 +19,6 @@ const Login = ({navigation}) => {
     const data = await OneSignal.getDeviceState();
 
     const player_id = data.userId;
-    // const token = await requestUserPermission();
-    // const token = await getUniqueId();
     const result = await userLogin(Mobile, Password, player_id);
     if (result.response.status === 1) {
       navigation.navigate('Home');
