@@ -27,6 +27,7 @@ import {UserAuthContextProvider} from './src/Context/UserAuthContext';
 import OneSignal from 'react-native-onesignal';
 import Accept from './src/Accept';
 import EditProfile from './src/Profile/EditProfile';
+import ViewKundli from './src/ViewKundli';
 
 const App = () => {
   // OneSignal Initialization
@@ -111,6 +112,7 @@ const App = () => {
           <Stack.Screen name="Trianing" component={Trianing} />
           <Stack.Screen name="Rules" component={Rules} />
           <Stack.Screen name="EditProfile" component={EditProfile} />
+          <Stack.Screen name="ViewKundli" component={ViewKundli} />
           <Stack.Screen
             name="ChatScreen"
             component={ChatScreen}

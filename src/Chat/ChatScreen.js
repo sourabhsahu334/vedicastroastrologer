@@ -40,7 +40,7 @@ const ChatScreen = ({navigation, route}) => {
 
   // useEffect(() => {
   //   const unsuscribe = Navigation.addListener('beforeRemove', e => {
-  //     e.preventDefault();u
+  //     e.preventDefault();
   //   });
   //   return unsuscribe;
   // }, [Navigation]);
@@ -62,13 +62,26 @@ const ChatScreen = ({navigation, route}) => {
           const {chatStatus} = documentSnapshot.data();
           if (chatStatus == 'completed') {
             setisInputDisabled(true);
-            setTimeout(() => {
-              setmodal(true);
-            }, 3000);
           }
         }
       });
   }, []);
+
+  const viewkundli = async () => {
+    const response = await fetch(
+      `https://astrowisdom.in/api/astrologer.php?method=viewKundli&roomId=${RoomId}`,
+    );
+    const data = await response.json();
+    navigation.navigate('ViewKundli', {
+      name: data.response.name,
+      gender: data.response.gender,
+      dob: data.response.dob,
+      tob: data.response.tob,
+      pob: data.response.pob,
+      lat: data.response.lat,
+      lon: data.response.lon,
+    });
+  };
 
   const renderInputToolbar = props => {
     const {containerStyle, ...inputToolbarProps} = props;
@@ -127,12 +140,13 @@ const ChatScreen = ({navigation, route}) => {
             borderRadius: 15,
             justifyContent: 'center',
           }}
-          onPress={() => console.log('Hello')}>
+          onPress={viewkundli}>
           <Text
             style={{
               fontSize: 12,
               textAlign: 'center',
               fontFamily: Family.Medium,
+              color: Colors.light,
             }}>
             View Kundli
           </Text>
