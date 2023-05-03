@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View, PermissionsAndroid} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import Home from './src/Home';
@@ -28,18 +28,16 @@ import OneSignal from 'react-native-onesignal';
 import Accept from './src/Accept';
 import EditProfile from './src/Profile/EditProfile';
 import ViewKundli from './src/ViewKundli';
+import VoiceCall from './src/VoiceCall';
+import CallAccept from './src/CallAccept';
 
 const App = () => {
-  // OneSignal Initialization
   OneSignal.setAppId('f3156d4f-7de2-4c6b-8aaf-79894c9b3f59');
 
-  // promptForPushNotificationsWithUserResponse will show the native iOS or Android notification permission prompt.
-  // We recommend removing the following code and instead using an In-App Message to prompt for notification permission (See step 8)
   OneSignal.promptForPushNotificationsWithUserResponse(response => {
     console.log(response);
   });
 
-  //Method for handling notifications received while app in foreground
   OneSignal.setNotificationWillShowInForegroundHandler(
     notificationReceivedEvent => {
       console.log(
@@ -60,11 +58,30 @@ const App = () => {
     console.log('OneSignal: notification opened:', notification);
   });
   const Stack = createNativeStackNavigator();
+
+  const granted = PermissionsAndroid.check(
+    PermissionsAndroid.PERMISSIONS.CAMERA,
+    PermissionsAndroid.RECORD_AUDIO,
+  );
+  granted
+    .then(data => {
+      if (!data) {
+        const permissions = [
+          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+          PermissionsAndroid.PERMISSIONS.CAMERA,
+        ];
+        PermissionsAndroid.requestMultiple(permissions);
+      }
+    })
+    .catch(err => {
+      console.log(err.toString());
+    });
+
   return (
     <UserAuthContextProvider>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Splash"
+          initialRouteName="VoiceCall"
           screenOptions={{
             headerTitleStyle: {
               fontSize: 16,
@@ -76,6 +93,16 @@ const App = () => {
           <Stack.Screen
             name="Home"
             component={Home}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="VoiceCall"
+            component={VoiceCall}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="CallAccept"
+            component={CallAccept}
             options={{headerShown: false}}
           />
           <Stack.Screen

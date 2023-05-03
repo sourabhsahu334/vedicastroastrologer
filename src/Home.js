@@ -5,7 +5,6 @@ import {
   ScrollView,
   BackHandler,
   TouchableOpacity,
-  PermissionsAndroid,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -26,14 +25,12 @@ const Home = ({navigation}) => {
     return unsuscribe;
   }, [Navigation]);
 
-  useEffect(async () => {
+  const getData = async () => {
     fetch(
       `https://astrowisdom.in/api/astrologer.php?method=checkAvability&astrologerId=1`,
     ).then(response => {
       response.json().then(parsedData => {
-        console.log('waittime', typeof parsedData.response.waitTime);
         if (parsedData.response.waitTime == 0) {
-          // if (true) {
           AsyncStorage.getItem('userId').then(val => {
             const now = firestore.Timestamp.now();
             const ts = firestore.Timestamp.fromMillis(now.toMillis() - 30000);
@@ -58,6 +55,35 @@ const Home = ({navigation}) => {
           });
         }
       });
+    });
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  useEffect(() => {
+    AsyncStorage.getItem('userId').then(val => {
+      const now = firestore.Timestamp.now();
+      const ts = firestore.Timestamp.fromMillis(now.toMillis() - 30000);
+      firestore()
+        .collection('call')
+        .where('AstrologerId', '==', val)
+        .onSnapshot(documentSnapshot => {
+          documentSnapshot.docs.map(value => {
+            const {userId, id, AstrologerId, RoomId, status, createdAt} =
+              value.data();
+            if (createdAt > ts) {
+              navigation.navigate('CallAccept', {
+                userId: userId,
+                id: id,
+                AstrologerId: AstrologerId,
+                RoomId: RoomId,
+                status: status,
+              });
+            }
+          });
+        });
     });
   }, []);
 
