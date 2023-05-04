@@ -1,21 +1,27 @@
 import {FlatList, StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import Family from '../Utitlies/Family';
 import Colors from '../Utitlies/Colors';
 import CallItem from './CallItem';
+import Global from '../Utitlies/Global';
+import {UserAuthContext} from '../Context/UserAuthContext';
 
 const CallHistory = ({navigation}) => {
-  const [Data, setData] = useState([
-    {
-      name: 'Vishal',
-      id: 2,
-      Time: '03/04/2022',
-      OrderId: 'txn000' + Math.floor(Math.random() * 100000),
-      rate: '6.60',
-      Status: 'Progress',
-      totalAmout: 50,
-    },
-  ]);
+  const {User} = useContext(UserAuthContext);
+  const [Data, setData] = useState([]);
+
+  const getCallHistory = async () => {
+    const response = await fetch(
+      Global.BASE_URL + `viewCallHistory&astrologerId=${User}`,
+    );
+    const result = await response.json();
+    setData(result.response);
+  };
+
+  useEffect(() => {
+    getCallHistory();
+  }, []);
+
   return (
     <View style={{flex: 1}}>
       <View style={{width: '95%', alignSelf: 'center', marginVertical: 10}}>

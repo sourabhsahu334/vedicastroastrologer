@@ -5,6 +5,7 @@ import Global from '../Utitlies/Global';
 import Family from '../Utitlies/Family';
 import Colors from '../Utitlies/Colors';
 import Loader from '../component/Loader';
+import Nodatafound from '../component/Nodatafound';
 
 const Followers = () => {
   const [Data, setData] = useState([]);
@@ -38,6 +39,7 @@ const Followers = () => {
         <View style={{flex: 1}}>
           <FlatList
             data={Data}
+            ListEmptyComponent={<Nodatafound />}
             style={{marginTop: 5}}
             showsVerticalScrollIndicator={false}
             renderItem={({item, index}) => {

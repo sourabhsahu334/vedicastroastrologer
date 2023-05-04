@@ -63,7 +63,11 @@ const ChatItem = ({item, navigation}) => {
               borderRadius: 5,
               marginTop: 15,
             }}
-            onPress={() => navigation.navigate('')}>
+            onPress={() =>
+              navigation.navigate('ChatScreen', {
+                RoomId: item.roomId,
+              })
+            }>
             <Text
               style={{
                 fontSize: 14,

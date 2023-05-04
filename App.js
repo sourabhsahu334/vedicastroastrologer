@@ -81,7 +81,7 @@ const App = () => {
     <UserAuthContextProvider>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="VoiceCall"
+          initialRouteName="Splash"
           screenOptions={{
             headerTitleStyle: {
               fontSize: 16,

@@ -6,6 +6,7 @@ import Family from '../Utitlies/Family';
 import Colors from '../Utitlies/Colors';
 import {StarIcon} from 'react-native-heroicons/solid';
 import Loader from '../component/Loader';
+import Nodatafound from '../component/Nodatafound';
 
 const Review = () => {
   const [Data, setData] = useState([]);
@@ -38,6 +39,7 @@ const Review = () => {
         <View style={{flex: 1}}>
           <FlatList
             data={Data}
+            ListEmptyComponent={<Nodatafound />}
             style={{marginTop: 5}}
             showsVerticalScrollIndicator={false}
             renderItem={({item, index}) => {

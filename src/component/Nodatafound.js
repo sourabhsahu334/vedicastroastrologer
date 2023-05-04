@@ -12,7 +12,12 @@ const Nodatafound = () => {
         alignItems: 'center',
       }}>
       <Text
-        style={{fontSize: 16, fontFamily: Family.Medium, color: Colors.gray}}>
+        style={{
+          fontSize: 16,
+          fontFamily: Family.Medium,
+          color: Colors.gray,
+          marginTop: 50,
+        }}>
         Sorry, No Data Found
       </Text>
     </View>

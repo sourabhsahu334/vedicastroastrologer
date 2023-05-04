@@ -1,10 +1,11 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
+import Nodatafound from '../component/Nodatafound';
 
 const Traning = () => {
   return (
-    <View>
-      <Text>Trianing</Text>
+    <View style={{flex: 1}}>
+      <Nodatafound />
     </View>
   );
 };

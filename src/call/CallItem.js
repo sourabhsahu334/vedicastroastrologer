@@ -4,6 +4,7 @@ import Colors from '../Utitlies/Colors';
 import Family from '../Utitlies/Family';
 
 const CallItem = ({item, navigation}) => {
+  console.log(item);
   return (
     <View
       style={{
@@ -22,80 +23,33 @@ const CallItem = ({item, navigation}) => {
         </Text>
         <Text
           style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
-          Order Id : {item.OrderId}
+          Order Id : {item.orderId}
         </Text>
         <Text
           style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
-          Time : {item.Time}
+          Time : {item.time}
         </Text>
         <Text
           style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
-          Rate : ₹ {item.rate}/ minute
+          Call Id : {item.callId}
         </Text>
         <Text
           style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
-          Status : {item.Status}
+          Status : Complete
         </Text>
-        <Text
-          style={{
-            fontSize: 20,
-            fontFamily: Family.Medium,
-            color: Colors.gray,
-            color: Colors.primary,
-            position: 'absolute',
-            top: 10,
-            right: 30,
-          }}>
-          ₹ {item.totalAmout}
-        </Text>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            width: '95%',
-          }}>
-          <TouchableOpacity
-            style={{
-              backgroundColor: Colors.secprimary,
-              paddingVertical: 5,
-              width: '45%',
-              borderRadius: 5,
-              marginTop: 15,
-            }}
-            onPress={() => navigation.navigate('ChatScreen')}>
-            <Text
-              style={{
-                fontSize: 14,
-                fontFamily: Family.Medium,
-                color: Colors.gray,
-                color: Colors.light,
-                textAlign: 'center',
-              }}>
-              Open Kundli
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              backgroundColor: Colors.primary,
-              paddingVertical: 5,
-              width: '45%',
-              borderRadius: 5,
-              marginTop: 15,
-            }}
-            onPress={() => navigation.navigate('ChatScreen')}>
-            <Text
-              style={{
-                fontSize: 14,
-                fontFamily: Family.Medium,
-                color: Colors.gray,
-                color: Colors.light,
-                textAlign: 'center',
-              }}>
-              Recording
-            </Text>
-          </TouchableOpacity>
-        </View>
       </View>
+      <Text
+        style={{
+          fontSize: 20,
+          fontFamily: Family.Medium,
+          color: Colors.gray,
+          color: Colors.primary,
+          position: 'relative',
+          top: 10,
+          right: 30,
+        }}>
+        ₹ {item.total}
+      </Text>
     </View>
   );
 };

@@ -187,17 +187,17 @@ const Home = ({navigation}) => {
             img={require('../assets/images/waiting.png')}
             action={() => navigation.navigate('Waitlist')}
           />
-          <Card
+          {/* <Card
             name={'Earning'}
             img={require('../assets/images/salary.png')}
             action={() => navigation.navigate('Earning')}
-          />
+          /> */}
           <Card
             name={'Wallet'}
             img={require('../assets/images/wallet.png')}
             action={() => navigation.navigate('Wallet')}
           />
-          <Card
+          {/* <Card
             name={'Offers'}
             img={require('../assets/images/gift.png')}
             action={() => navigation.navigate('Offers')}
@@ -206,7 +206,7 @@ const Home = ({navigation}) => {
             name={'Reports'}
             img={require('../assets/images/report.png')}
             action={() => navigation.navigate('Report')}
-          />
+          /> */}
           <Card
             name={'Followers'}
             img={require('../assets/images/followers.png')}

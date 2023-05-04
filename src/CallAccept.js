@@ -16,7 +16,7 @@ import Global from './Utitlies/Global';
 
 const CallAccept = ({navigation, route}) => {
   const [Accepted, setAccepted] = useState(false);
-  const {userId, id, RoomId, status} = route.params;
+  const {userId, id, RoomId, status, AstrologerId} = route.params;
   const [Data, setData] = useState([]);
 
   useEffect(() => {
@@ -34,19 +34,24 @@ const CallAccept = ({navigation, route}) => {
   }, []);
 
   const Accept = () => {
-    firestore()
-      .collection('call')
-      .doc(id)
-      .update({
-        status: 'accepted',
-      })
-      .then(() => {
-        navigation.navigate('VoiceCall', {
-          RoomId,
-          userId,
-          name: Data.name,
+    fetch(
+      Global.BASE_URL +
+        `createCall&userId=${userId}&astrologerId=${AstrologerId}&roomId=${RoomId}`,
+    ).then(() => {
+      firestore()
+        .collection('call')
+        .doc(id)
+        .update({
+          status: 'accepted',
+        })
+        .then(() => {
+          navigation.navigate('VoiceCall', {
+            RoomId,
+            userId,
+            name: Data.name,
+          });
         });
-      });
+    });
   };
 
   const Reject = () => {

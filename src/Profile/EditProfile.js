@@ -29,10 +29,10 @@ const EditProfile = () => {
   const {User} = useContext(UserAuthContext);
   const [Loading, setLoading] = useState(false);
 
-  const getUserPorfile = async () => {
+  const getData = async () => {
     setLoading(true);
     const response = await fetch(
-      Global.BASE_URL + `myProfile&astrologerId=${User}`,
+      Global.BASE_URL + `myProfiles&astrologerId=${User}`,
     );
     const data = await response.json();
     setProfilePhotoUrl(data.response.photo);
@@ -46,7 +46,7 @@ const EditProfile = () => {
   };
 
   useEffect(() => {
-    getUserPorfile();
+    getData();
   }, []);
 
   const ProfileImagePicker = async () => {
@@ -86,7 +86,7 @@ const EditProfile = () => {
         </View>
       ) : (
         <ScrollView ScrollView style={{flex: 1}}>
-          {ProfilePhotoUrl == '' ? null : (
+          {/* {ProfilePhotoUrl == '' ? null : (
             <Image
               source={{uri: ProfilePhotoUrl}}
               style={{
@@ -109,7 +109,7 @@ const EditProfile = () => {
               }}>
               Select Photo
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <View
             style={{

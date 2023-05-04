@@ -41,6 +41,7 @@ const ChatHistory = ({navigation}) => {
           <View style={{width: '95%', alignSelf: 'center', marginVertical: 0}}>
             <FlatList
               data={Data}
+              showsVerticalScrollIndicator={false}
               ListEmptyComponent={<Nodatafound />}
               renderItem={({item, index}) => {
                 return <ChatItem item={item} navigation={navigation} />;

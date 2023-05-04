@@ -19,20 +19,18 @@ const Profile = ({navigation}) => {
   const [Loading, setLoading] = useState(false);
   const {User} = useContext(UserAuthContext);
 
-  const getUserPorfile = async () => {
+  const getData = async () => {
     setLoading(true);
-    console.log(Global.BASE_URL + `myProfile&astrologerId=${User}`);
     const response = await fetch(
-      Global.BASE_URL + `myProfile&astrologerId=${User}`,
+      Global.BASE_URL + `myProfiles&astrologerId=${User}`,
     );
-    const data = await response.json();
-    console('Data', data.response);
-    setData(data.response);
+    const result = await response.json();
+    setData(result.response);
     setLoading(false);
   };
 
   useEffect(() => {
-    getUserPorfile();
+    getData();
   }, []);
 
   return (
