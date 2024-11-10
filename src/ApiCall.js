@@ -31,7 +31,7 @@ export const ApiCall2 = async (url,data) => {
     dob:data?.day+"/"+data?.month.toString().padStart(2, '0')+"/"+data.year,
     lat: data.lat,
     lon: data.lon,
-    tob: data?.hour + ":" + data?.min.toString().padStart(2, '0'),
+    tob: data?.hour?.toString().padStart(2, '0') + ":" + data?.min.toString().padStart(2, '0'),
     lang:data?.lang,
     tz:data?.tzone
    }});
@@ -50,7 +50,7 @@ export const ApiCall3 = async (url,data) => {
       lat: data.lat,
       lon: data.lon,
       div:data?.div,
-      tob: data?.hour + ":" + data?.min.toString().padStart(2, '0'),
+      tob: data?.hour?.toString().padStart(2, '0') + ":" + data?.min.toString().padStart(2, '0'),
       lang:data?.lang,
       tz:data?.tzone,
       // lang:"hi",

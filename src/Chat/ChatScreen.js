@@ -92,7 +92,7 @@ const ChatScreen = ({navigation, route}) => {
        roomId:RoomId
      }})
      const data = response.data;
-     console.log(response.data)
+    //  return console.log(response.data)
      navigation.navigate('ViewKundli', {
        name: data.response.name,
        gender: data.response.gender,

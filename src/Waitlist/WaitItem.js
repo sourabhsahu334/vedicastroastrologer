@@ -80,7 +80,7 @@ const WaitItem = ({item, navigation, getDoucumentId, getWaitList}) => {
       roomId:item.roomId
     }})
     const data = response.data;
-    console.log(response.data)
+  //  return console.log(response.data)
     navigation.navigate('ViewKundli', {
       name: data.response.name,
       gender: data.response.gender,
