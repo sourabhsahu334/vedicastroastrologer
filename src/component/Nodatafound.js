@@ -18,7 +18,7 @@ const Nodatafound = () => {
           color: Colors.gray,
           marginTop: 50,
         }}>
-        Sorry, No Data Found
+        No Data Found
       </Text>
     </View>
   );

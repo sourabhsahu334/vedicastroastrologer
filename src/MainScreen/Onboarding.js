@@ -38,7 +38,7 @@ const Onboarding = ({navigation}) => {
             fontFamily: Family.SemiBold,
             color: Colors.primary,
           }}>
-          AW Astrolger
+          VA Astrolger
         </Animatable.Text>
         <View style={{width: '80%'}}>
           <Animatable.Image

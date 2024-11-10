@@ -6,19 +6,28 @@ import Family from '../Utitlies/Family';
 import Colors from '../Utitlies/Colors';
 import Loader from '../component/Loader';
 import Nodatafound from '../component/Nodatafound';
+import { http } from '../utils/AxiosInstance';
 
 const Followers = () => {
   const [Data, setData] = useState([]);
   const [Loading, setLoading] = useState(false);
   const {User} = useContext(UserAuthContext);
   const getFollowers = async () => {
-    setLoading(true);
-    const response = await fetch(
-      Global.BASE_URL + `astrologerFollower&astrologerId=${User}`,
-    );
-    const data = await response.json();
-    setData(data.response);
-    setLoading(false);
+     try {
+      setLoading(true);
+      const {data} = await http.get("/",{params:{
+        method:"astrologerFollower",
+        astrologerId:User
+      }}
+      // `astrologerFollower&astrologerId=1`,
+      );
+      console.log(data,"data")
+      // const data = await response?.data;
+      setData(data.response);
+      setLoading(false);
+     } catch (error) {
+      console.log(error,'e')
+     }
   };
   useEffect(() => {
     getFollowers();

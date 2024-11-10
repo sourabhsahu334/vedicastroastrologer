@@ -4,7 +4,6 @@ import Colors from '../Utitlies/Colors';
 import Family from '../Utitlies/Family';
 
 const CallItem = ({item, navigation}) => {
-  console.log(item);
   return (
     <View
       style={{
@@ -15,6 +14,7 @@ const CallItem = ({item, navigation}) => {
         elevation: 5,
         flexDirection: 'row',
         justifyContent: 'space-between',
+        marginBottom: 10,
       }}>
       <View>
         <Text

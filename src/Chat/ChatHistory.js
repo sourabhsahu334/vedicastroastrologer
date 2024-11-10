@@ -5,19 +5,28 @@ import Global from '../Utitlies/Global';
 import {UserAuthContext} from '../Context/UserAuthContext';
 import Nodatafound from '../component/Nodatafound';
 import Loader from '../component/Loader';
+import { http } from '../utils/AxiosInstance';
 
 const ChatHistory = ({navigation}) => {
   const {User} = useContext(UserAuthContext);
   const [Loading, setLoading] = useState(false);
 
   const getChatHistory = async () => {
-    setLoading(true);
-    const response = await fetch(
-      Global.BASE_URL + `chatHistory&astrologerId=${User}`,
-    );
-    const data = await response.json();
-    setData(data.response);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const {data} = await http.get("/",{params:{
+        method:"chatHistory",
+        astrologerId:User
+      }}
+      // `astrologerFollower&astrologerId=1`,
+      );
+      console.log(data,"data")
+      // const data = await response?.data;
+      setData(data.response);
+      setLoading(false);
+     } catch (error) {
+      console.log(error,'e')
+     }
   };
 
   useEffect(() => {
@@ -34,13 +43,15 @@ const ChatHistory = ({navigation}) => {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Loader isLoading={Loading} />
+          {/* <Loader isLoading={Loading} /> */}
+          <Text style={{color:"black"}}>No data found</Text>
         </View>
       ) : (
         <View style={{flex: 1}}>
           <View style={{width: '95%', alignSelf: 'center', marginVertical: 0}}>
             <FlatList
               data={Data}
+              inverted={true}
               showsVerticalScrollIndicator={false}
               ListEmptyComponent={<Nodatafound />}
               renderItem={({item, index}) => {

@@ -32,6 +32,7 @@ const Waitlist = ({navigation}) => {
     );
     const data = await response.json();
     setData(data.response);
+    console.log(data.response,"waitlist")
     setLoading(false);
   };
   useEffect(() => {
@@ -52,7 +53,7 @@ const Waitlist = ({navigation}) => {
           const RoomId = 'txn' + Math.floor(Math.random() * 100000000);
           setRoomId(RoomId);
           const response = await fetch(
-            `https://sellpe.in/astro/api/astrologer.php?method=chatRequest&userId=${userId}`,
+            `https://www.radicalone.co.in/vaidicastro/activity.php?method=chatRequest&userId=${userId}`,
           );
           const collectionset = firestore()
             .collection('user')

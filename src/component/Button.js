@@ -6,7 +6,7 @@ import Family from '../Utitlies/Family';
 
 const Button = ({name, action }) => {
     return (
-        <TouchableOpacity style={{backgroundColor:Colors.primary, paddingVertical:15,paddingHorizontal:20,borderRadius:5,  width:"100%", flexDirection:"row" ,alignItems:"center", justifyContent:"center"}} onPress={action} >
+        <TouchableOpacity style={{backgroundColor:"#874827", paddingVertical:15,paddingHorizontal:20,borderRadius:5,  width:"100%", flexDirection:"row" ,alignItems:"center", justifyContent:"center"}} onPress={action} >
            <Text style={{fontSize:15,fontFamily:Family.Medium,color:Colors.light}}>{name}</Text>
            <ArrowRightIcon color={Colors.light}  size={18} style={{marginLeft:10,marginBottom:3}}/>
         </TouchableOpacity>

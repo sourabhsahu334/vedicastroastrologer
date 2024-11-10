@@ -14,16 +14,23 @@ import Colors from '../Utitlies/Colors';
 import {ArrowLeftIcon} from 'react-native-heroicons/solid';
 import Family from '../Utitlies/Family';
 import {useNavigation} from '@react-navigation/native';
+import axios from 'axios';
+import Global from '../Utitlies/Global';
+import { http } from '../utils/AxiosInstance';
 
 const ChatScreen = ({navigation, route}) => {
+
   const [messages, setMessages] = useState([]);
   const {User} = useContext(UserAuthContext);
   const [isInputDisabled, setisInputDisabled] = useState(false);
   const [modal, setmodal] = useState(false);
-  const {RoomId} = route.params;
+  const userId = route?.params?.userid
+  const RoomId = route.params?.RoomId||"txn13552256" ;
+  const [data,setData]=useState()
   const Navigation = useNavigation();
 
   useEffect(() => {
+    getProfile()
     const querySnapshot = firestore()
       .collection('Room')
       .doc(RoomId)
@@ -67,21 +74,38 @@ const ChatScreen = ({navigation, route}) => {
       });
   }, []);
 
-  const viewkundli = async () => {
-    const response = await fetch(
-      `https://astrowisdom.in/api/astrologer.php?method=viewKundli&roomId=${RoomId}`,
-    );
-    const data = await response.json();
-    navigation.navigate('ViewKundli', {
-      name: data.response.name,
-      gender: data.response.gender,
-      dob: data.response.dob,
-      tob: data.response.tob,
-      pob: data.response.pob,
-      lat: data.response.lat,
-      lon: data.response.lon,
-    });
+  const getProfile = async () => {
+   try {
+    const {data}= await axios.get(`https://www.radicalone.co.in/vedicastro/activity.php?method=myProfile&userId=${userId||10}`)
+    console.log(data,"s")
+    setData(data.response);
+    console.log(data?.response.name)
+   } catch (error) {
+    console.log(error)
+   }
   };
+
+  const viewkundli = async () => {
+    try {
+     const response = await http.get('/',{params:{
+       method:"viewKundli",
+       roomId:RoomId
+     }})
+     const data = response.data;
+     console.log(response.data)
+     navigation.navigate('ViewKundli', {
+       name: data.response.name,
+       gender: data.response.gender,
+       dob: data.response.dob,
+       tob: data.response.tob,
+       pob: data.response.pob,
+       lat: data.response.lat,
+       lon: data.response.lon,
+     });
+    } catch (error) {
+     console.log(error,"kun ivew");
+    }
+   };
 
   const renderInputToolbar = props => {
     const {containerStyle, ...inputToolbarProps} = props;
@@ -95,12 +119,11 @@ const ChatScreen = ({navigation, route}) => {
           padding: 10,
         }}>
         <Text style={{color: 'red', textAlign: 'justify', fontSize: 13}}>
-          This is an automated messages. Chat has been ended due to Customer
-          doesn't have enough balance.
+          This is an automated messages. Chat has been ended.
         </Text>
       </View>
     ) : (
-      <InputToolbar {...inputToolbarProps} containerStyle={containerStyle} />
+      <InputToolbar {...inputToolbarProps} containerStyle={{color:"black",backgroundColor:"rgba(0,0,0,.5)"}} />
     );
   };
 
@@ -129,7 +152,7 @@ const ChatScreen = ({navigation, route}) => {
               marginLeft: 10,
               fontFamily: Family.Medium,
             }}>
-            ChatScreen
+            {data?.name}
           </Text>
         </View>
         <TouchableOpacity
@@ -137,7 +160,7 @@ const ChatScreen = ({navigation, route}) => {
             backgroundColor: Colors.primary,
             paddingHorizontal: 10,
             paddingVertical: 5,
-            borderRadius: 15,
+            borderRadius: 5,
             justifyContent: 'center',
           }}
           onPress={viewkundli}>
@@ -146,7 +169,7 @@ const ChatScreen = ({navigation, route}) => {
               fontSize: 12,
               textAlign: 'center',
               fontFamily: Family.Medium,
-              color: Colors.light,
+              color: 'black',
             }}>
             View Kundli
           </Text>

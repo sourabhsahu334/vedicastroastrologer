@@ -1,44 +1,83 @@
 {
   "project_info": {
-    "project_number": "107001710854",
-    "project_id": "astro-wisdom",
-    "storage_bucket": "astro-wisdom.appspot.com"
+    "project_number": "324286603183",
+    "project_id": "astro-d96c1",
+    "storage_bucket": "astro-d96c1.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:107001710854:android:c032e9445c970bb440b687",
+        "mobilesdk_app_id": "1:324286603183:android:f2bc8cfe3e6d67159e195a",
         "android_client_info": {
-          "package_name": "com.awastrolger"
+          "package_name": "com.VAastrolger"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "107001710854-pphdcf7qbrpjkbltv7rf3a9fou3lsub1.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.awastrolger",
-            "certificate_hash": "1df141c9e59689bfa92ad52470696cd379e79495"
-          }
-        },
-        {
-          "client_id": "107001710854-6oajldeh9u4fil1qre3q9nna228ooenm.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAc43PvYYChiIgCfBRxcB4zpw5UliQGLSM"
+          "current_key": "AIzaSyCFe0qJ6uoipPYdvdF33fWPfMR53qamW5U"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "107001710854-6oajldeh9u4fil1qre3q9nna228ooenm.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:324286603183:android:534bfae338f546989e195a",
+        "android_client_info": {
+          "package_name": "com.VaidicAstro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFe0qJ6uoipPYdvdF33fWPfMR53qamW5U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:324286603183:android:7f24a9c7adfdbd159e195a",
+        "android_client_info": {
+          "package_name": "com.astro"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFe0qJ6uoipPYdvdF33fWPfMR53qamW5U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:324286603183:android:1dbdc126951967f19e195a",
+        "android_client_info": {
+          "package_name": "com.awastrolger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFe0qJ6uoipPYdvdF33fWPfMR53qamW5U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
         }
       }
     }

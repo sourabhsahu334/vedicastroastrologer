@@ -14,6 +14,7 @@ import WalletItem from './WalletItem';
 import Global from '../Utitlies/Global';
 import {UserAuthContext} from '../Context/UserAuthContext';
 import Loader from '../component/Loader';
+import Nodatafound from '../component/Nodatafound';
 
 const Wallet = ({navigation}) => {
   const [Data, setData] = useState([]);
@@ -110,6 +111,7 @@ const Wallet = ({navigation}) => {
             <FlatList
               data={Data}
               showsVerticalScrollIndicator={false}
+              ListEmptyComponent={<Nodatafound />}
               renderItem={({item, index}) => {
                 return (
                   <WalletItem

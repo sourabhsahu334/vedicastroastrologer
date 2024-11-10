@@ -36,8 +36,8 @@ const Splash = ({navigation}) => {
         <Animatable.Image
           animation="bounceIn"
           duration={5000}
-          source={require('../../assets/images/logo.png')}
-          style={{width: '80%', height: 200, resizeMode: 'contain'}}
+          source={require('../../assets/images/AstroLogo.jpg')}
+          style={{width: 220, height: 220, resizeMode: 'contain',borderRadius:500}}
         />
       </View>
       <View style={{position: 'absolute', bottom: 50, alignSelf: 'center'}}>

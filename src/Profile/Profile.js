@@ -26,6 +26,7 @@ const Profile = ({navigation}) => {
     );
     const result = await response.json();
     setData(result.response);
+    console.log(result)
     setLoading(false);
   };
 
@@ -62,7 +63,7 @@ const Profile = ({navigation}) => {
               onPress={() => navigation.navigate('EditProfile')}>
               <PencilSquareIcon color={Colors.primary} size={24} />
             </TouchableOpacity>
-            {Data.photo == null ? null : (
+            {/* {Data.photo == null ? null : (
               <Image
                 source={{uri: Data.photo}}
                 style={{
@@ -72,7 +73,7 @@ const Profile = ({navigation}) => {
                   resizeMode: 'cover',
                 }}
               />
-            )}
+            )} */}
             <View style={{marginLeft: 20}}>
               <Text
                 style={{

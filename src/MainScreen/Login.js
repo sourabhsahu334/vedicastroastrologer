@@ -24,8 +24,9 @@ const Login = ({navigation}) => {
       Alert.alert('Password should be minimum 6 character');
     } else {
       setLaoding(true);
-      const data = await OneSignal.getDeviceState();
-      const player_id = data.userId;
+      // const data = await OneSignal.getDeviceState();
+      const player_id = await AsyncStorage.getItem('token')
+      
       const result = await userLogin(Mobile, Password, player_id);
       if (result.response.status === 1) {
         navigation.navigate('Home');
@@ -48,15 +49,16 @@ const Login = ({navigation}) => {
           <Animatable.Image
             animation="bounceIn"
             duration={3000}
-            source={require('../../assets/images/logo.png')}
+            source={require('../../assets/images/AstroLogo.jpg')}
             style={{
-              width: '80%',
-              height: 160,
-              resizeMode: 'contain',
+              width: 150,
+              height: 150,
+              // resizeMode: 'contain',
+              borderRadius:200,
               alignSelf: 'center',
             }}
           />
-          <View style={{width: '90%', alignSelf: 'center'}}>
+          <View style={{width: '90%', alignSelf: 'center',marginTop:50}}>
             <Text
               style={{
                 textAlign: 'center',

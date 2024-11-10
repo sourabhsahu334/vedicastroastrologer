@@ -6,16 +6,37 @@ import {
   Image,
   ToastAndroid,
 } from 'react-native';
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import Colors from '../Utitlies/Colors';
 import Family from '../Utitlies/Family';
 import Global from '../Utitlies/Global';
 import {UserAuthContext} from '../Context/UserAuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
+import theme from '../utils/theme';
+import { globalStyles } from '../utils/GlobalStyles';
+import { http } from '../utils/AxiosInstance';
+import { sendNotification } from '../Acceptpop';
+import axios from 'axios';
 
 const WaitItem = ({item, navigation, getDoucumentId, getWaitList}) => {
   const {User} = useContext(UserAuthContext);
+  const [data,setData]=useState();
+  const fetch = async()=>{
+    try {
+      const {data} = await axios.get(
+        Global.BASE_URL + `myProfiles&astrologerId=${User}`,
+      );
+      // const result = await response.json();
+      setData(data.response);
+    } catch (error) {
+      cons
+    }
+  }
+  useEffect(()=>{
+  
+  },[])
+  // console.log(item?.roomId)
 
   const Reject = async chatId => {
     const response = await fetch(
@@ -28,30 +49,51 @@ const WaitItem = ({item, navigation, getDoucumentId, getWaitList}) => {
     getWaitList();
   };
 
-  // const onaccept = value => {
-  //   AsyncStorage.getItem('userId').then(val => {
-  //     const now = firestore.Timestamp.now();
-  //     const ts = firestore.Timestamp.fromMillis(now.toMillis() - 30000);
-  //     const querySnapshot = firestore()
-  //       .collection('astrologer')
-  //       .doc(val)
-  //       .collection('connection')
-  //       .where('createdAt', '>', ts);
-  //     querySnapshot.onSnapshot(snapshot => {
-  //       snapshot.docs.map(value => {
-  //         const {userId, id, AstrologerId, RoomId} = value.data();
-  //         if (value.data() !== null) {
-  //           navigation.navigate('Accept', {
-  //             userId: value,
-  //             astrologerDocumentid: id,
-  //             AstrologerId: AstrologerId,
-  //             RoomId: RoomId,
-  //           });
-  //         }
-  //       });
-  //     });
-  //   });
-  // };
+  const onaccept = value => {
+    AsyncStorage.getItem('userId').then(val => {
+      const now = firestore.Timestamp.now();
+      const ts = firestore.Timestamp.fromMillis(now.toMillis() - 30000);
+      const querySnapshot = firestore()
+        .collection('astrologer')
+        .doc(val)
+        .collection('connection')
+        .where('createdAt', '>', ts);
+      querySnapshot.onSnapshot(snapshot => {
+        snapshot.docs.map(value => {
+          const {userId, id, AstrologerId, RoomId} = value.data();
+          if (value.data() !== null) {
+            navigation.navigate('Accept', {
+              userId: value,
+              astrologerDocumentid: id,
+              AstrologerId: AstrologerId,
+              RoomId: RoomId,
+            });
+          }
+        });
+      });
+    });
+  };
+  const viewkundli = async () => {
+   try {
+    const response = await http.get('/',{params:{
+      method:"viewKundli",
+      roomId:item.roomId
+    }})
+    const data = response.data;
+    console.log(response.data)
+    navigation.navigate('ViewKundli', {
+      name: data.response.name,
+      gender: data.response.gender,
+      dob: data.response.dob,
+      tob: data.response.tob,
+      pob: data.response.pob,
+      lat: data.response.lat,
+      lon: data.response.lon,
+    });
+   } catch (error) {
+    console.log(error,"kun ivew");
+   }
+  };
 
   return (
     <View
@@ -77,6 +119,10 @@ const WaitItem = ({item, navigation, getDoucumentId, getWaitList}) => {
         <Text
           style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
           Status : {item.status}
+        </Text>
+        <Text
+          style={{fontSize: 14, fontFamily: Family.Medium, color: Colors.gray}}>
+          Type : {item.type}
         </Text>
         <View
           style={{
@@ -128,7 +174,9 @@ const WaitItem = ({item, navigation, getDoucumentId, getWaitList}) => {
               marginTop: 15,
             }}
             onPress={() => {
-              getDoucumentId(item.userId);
+              // getDoucumentId(item.userId);
+              navigation.navigate('AcceptPop',{loading:true})
+              sendNotification(item.userToken, item.roomId,User,item.astrologerToken,item.type||'call',null,data?.name);
               // onaccept(item.userId);
             }}>
             <Text
@@ -143,6 +191,9 @@ const WaitItem = ({item, navigation, getDoucumentId, getWaitList}) => {
             </Text>
           </TouchableOpacity>
         </View>
+        <TouchableOpacity onPress={()=>viewkundli()} style={{width:"95%",backgroundColor:theme.colors.Yellow,justifyContent:'center',alignItems:'center',paddingVertical:5,marginTop:10,borderRadius:5}}>
+          <Text style={[globalStyles.text2]}>View Kundali</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

@@ -34,24 +34,19 @@ const CallAccept = ({navigation, route}) => {
   }, []);
 
   const Accept = () => {
-    fetch(
-      Global.BASE_URL +
-        `createCall&userId=${userId}&astrologerId=${AstrologerId}&roomId=${RoomId}`,
-    ).then(() => {
-      firestore()
-        .collection('call')
-        .doc(id)
-        .update({
-          status: 'accepted',
-        })
-        .then(() => {
-          navigation.navigate('VoiceCall', {
-            RoomId,
-            userId,
-            name: Data.name,
-          });
+    firestore()
+      .collection('call')
+      .doc(id)
+      .update({
+        status: 'accepted',
+      })
+      .then(() => {
+        navigation.navigate('VoiceCall', {
+          RoomId,
+          userId,
+          name: Data.name,
         });
-    });
+      });
   };
 
   const Reject = () => {
@@ -62,13 +57,13 @@ const CallAccept = ({navigation, route}) => {
         status: 'declined',
       })
       .then(() => {
-        navigation.goBack();
+        navigation.navigate('Home');
       });
   };
 
   const getProfile = async () => {
     const response = await fetch(
-      `https://sellpe.in/astro/api/activity.php?method=myProfile&userId=${userId}`,
+      `https://www.radicalone.co.in/vaidicastro/activity.php?method=myProfile&userId=${userId}`,
     );
     const data = await response.json();
     setData(data.response);
@@ -119,7 +114,7 @@ const CallAccept = ({navigation, route}) => {
             ? 'Ringing......'
               ? Declined
               : 'Call Declined'
-            : 'Incoming Chat Request'}
+            : 'Incoming Call Request'}
         </Text>
       </View>
 

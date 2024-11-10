@@ -17,15 +17,15 @@ import Global from './Utitlies/Global';
 const Accept = ({navigation, route}) => {
   const [Accepted, setAccepted] = useState(false);
   const {userId, astrologerDocumentid, AstrologerId, RoomId} = route.params;
+  console.log(route.params,"datax");
   const [Declined, setDeclined] = useState(false);
   const [Data, setData] = useState([]);
   const Navigation = useNavigation();
 
   const Accept = async () => {
-    console.log('12a');
     setAccepted(true);
     const response = await fetch(
-      `https://astrowisdom.in/api/astrologer.php?method=chatRequest&userId=${userId}`,
+      `https://www.radicalone.co.in/vedicastro/astrologer.php?method=chatRequest&userId=${userId}`,
     );
     const collectionset = firestore()
       .collection('user')
@@ -81,36 +81,9 @@ const Accept = ({navigation, route}) => {
       });
   }, [RoomId]);
 
-  // useEffect(async () => {
-  //   fetch(
-  //     `https://astrowisdom.in/api/astrologer.php?method=checkAvability&astrologerId=1`,
-  //   ).then(response => {
-  //     response.json().then(parsedData => {
-  //       console.log('waittime', typeof parsedData.response.waitTime);
-  //       if (parsedData.response.waitTime == 0) {
-  //         // if (true) {
-  //         firestore()
-  //           .collection('Room')
-  //           .doc(RoomId)
-  //           .onSnapshot(doc => {
-  //             if (doc.data() !== undefined) {
-  //               const {RoomId, AstrologerId, userId, chatStatus} = doc.data();
-  //               navigation.navigate('ChatScreen', {
-  //                 chatStatus: chatStatus,
-  //                 RoomId: RoomId,
-  //                 AstrologerId: AstrologerId,
-  //                 userId: userId,
-  //               });
-  //             }
-  //           });
-  //       }
-  //     });
-  //   });
-  // }, [RoomId]);
-
   const getProfile = async () => {
     const response = await fetch(
-      `https://sellpe.in/astro/api/activity.php?method=myProfile&userId=${userId}`,
+      `https://www.radicalone.co.in/vedicastro/astrologer.php?method=myProfile&userId=${userId}`,
     );
     const data = await response.json();
     setData(data.response);

@@ -18,7 +18,7 @@ import Colors from '../Utitlies/Colors';
 import Button from '../component/Button';
 import Loader from '../component/Loader';
 
-const EditProfile = () => {
+const EditProfile = ({navigation}) => {
   const [ProfilePhotoUrl, setProfilePhotoUrl] = useState('');
   const [Education, setEducation] = useState('');
   const [Website, setWebsite] = useState('');
@@ -70,7 +70,8 @@ const EditProfile = () => {
         `updateProfile&education=${Education}&university=${University}&youtube=${Youtube}&instagram=${Instagram}&website=${Website}&astrologerId=${User}&description=${Description}`,
     );
     const data = await response.json();
-    Alert.alert(data.message);
+    Alert.alert(data.response.message);
+    navigation.navigate('Home');
   };
 
   return (

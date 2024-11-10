@@ -1,4 +1,4 @@
-package com.awastrolger;
+package com.VAastrolger;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

@@ -5,6 +5,7 @@ import {
   ScrollView,
   BackHandler,
   TouchableOpacity,
+  Switch,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
@@ -14,8 +15,46 @@ import Colors from './Utitlies/Colors';
 import Family from './Utitlies/Family';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
+import Global from './Utitlies/Global';
 
 const Home = ({navigation}) => {
+  const [isVoice, setisVoice] = useState(false);
+  const [isChat, setisChat] = useState(false);
+  const [userId, setuserId] = useState(false);
+  const [Data, setData] = useState({});
+  const [Rate, setRate] = useState('');
+
+  const toggleChat = () => {
+    fetch(
+      Global.BASE_URL +
+        `onlineStatus&status=chat_status&type=${
+          isChat ? 'offline' : 'online'
+        }&astrologerId=${userId}`,
+    );
+    setisChat(previousState => !previousState);
+  };
+
+  const toggleVoice = () => {
+    fetch(
+      Global.BASE_URL +
+        `onlineStatus&status=call_status&type=${
+          isVoice ? 'offline' : 'online'
+        }&astrologerId=${userId}`,
+    );
+    setisVoice(previousState => !previousState);
+  };
+
+  const [ isVideo,setIsVideo]=useState(false)
+  const toggleVedio = () => {
+    fetch(
+      Global.BASE_URL +
+        `onlineStatus&status=video_status&type=${
+          isVideo ? 'offline' : 'online'
+        }&astrologerId=${userId}`,
+    ).then((res)=>console.log(res)).catch((re)=>console.log(re))
+    setIsVideo(previousState => !previousState);
+  };
+
   const Navigation = useNavigation();
   useEffect(() => {
     const unsuscribe = Navigation.addListener('beforeRemove', e => {
@@ -24,42 +63,61 @@ const Home = ({navigation}) => {
     });
     return unsuscribe;
   }, [Navigation]);
-
+  
   const getData = async () => {
-    fetch(
-      `https://astrowisdom.in/api/astrologer.php?method=checkAvability&astrologerId=1`,
-    ).then(response => {
-      response.json().then(parsedData => {
-        if (parsedData.response.waitTime == 0) {
-          AsyncStorage.getItem('userId').then(val => {
-            const now = firestore.Timestamp.now();
-            const ts = firestore.Timestamp.fromMillis(now.toMillis() - 30000);
-            const querySnapshot = firestore()
-              .collection('astrologer')
-              .doc(val)
-              .collection('connection')
-              .where('createdAt', '>', ts);
-            querySnapshot.onSnapshot(snapshot => {
-              snapshot.docs.map(value => {
-                const {userId, id, AstrologerId, RoomId} = value.data();
-                if (value.data() !== null) {
-                  navigation.navigate('Accept', {
-                    userId: userId,
-                    astrologerDocumentid: id,
-                    AstrologerId: AstrologerId,
-                    RoomId: RoomId,
-                  });
-                }
-              });
+    // console.log('sss')
+    AsyncStorage.getItem('userId').then(val => {
+      setuserId(val);
+      // console.log(val)
+      const now = firestore.Timestamp.now();
+      const ts = firestore.Timestamp.fromMillis(now.toMillis() - 30000);
+      const querySnapshot = firestore()
+        .collection('astrologer')
+        .doc(val)
+        .collection('connection')
+        .where('createdAt', '>', ts);
+      // console.log(querySnapshot?.onSnapshot);
+      querySnapshot.onSnapshot(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          console.log('Document data:', doc.data());
+        });
+      }, error => {
+        console.error('Error fetching documents: ', error);
+      });
+      
+      querySnapshot.onSnapshot(snapshot => {
+        snapshot?.docs.map(value => {
+          const {userId, id, AstrologerId, RoomId} = value.data();
+          console.log(value.data(),"sd")
+          if (value.data() !== null) {
+            navigation.navigate('Accept', {
+              userId: userId,
+              astrologerDocumentid: id,
+              AstrologerId: AstrologerId,
+              RoomId: RoomId,
             });
-          });
-        }
+          }
+        });
+      });
+    });
+  };
+
+  const getRate = () => {
+    AsyncStorage.getItem('userId').then(val => {
+      fetch(Global.BASE_URL + `homeStatus&astrologerId=${val}`).then(res => {
+        res.json().then(data => {
+          console.log(data);
+          setRate(data.response.rate);
+          setisChat(data.response.chat == 'offline' ? false : true);
+          setisVoice(data.response.call == 'offline' ? false : true);
+        });
       });
     });
   };
 
   useEffect(() => {
     getData();
+    getRate();
   }, []);
 
   useEffect(() => {
@@ -70,7 +128,7 @@ const Home = ({navigation}) => {
         .collection('call')
         .where('AstrologerId', '==', val)
         .onSnapshot(documentSnapshot => {
-          documentSnapshot.docs.map(value => {
+          documentSnapshot?.docs.map(value => {
             const {userId, id, AstrologerId, RoomId, status, createdAt} =
               value.data();
             if (createdAt > ts) {
@@ -93,7 +151,7 @@ const Home = ({navigation}) => {
       <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>
         <View
           style={{
-            backgroundColor: Colors.secondary,
+            backgroundColor: "#874827",
             width: '95%',
             alignSelf: 'center',
             marginTop: 10,
@@ -152,13 +210,112 @@ const Home = ({navigation}) => {
               style={{
                 fontSize: 12,
                 fontFamily: Family.Medium,
-                color: Colors.primary,
+                color: "black",
                 textAlign: 'center',
               }}>
               Show More
             </Text>
           </TouchableOpacity>
         </View>
+        <View
+          style={{
+            backgroundColor: Colors.light,
+            width: '95%',
+            alignSelf: 'center',
+            marginTop: 10,
+            paddingHorizontal: 10,
+            borderRadius: 10,
+            paddingVertical: 10,
+          }}>
+          <Text
+            style={{
+              fontSize: 16,
+              fontFamily: Family.Regular,
+              color: Colors.primary,
+              marginTop: 5,
+              textDecorationLine: 'underline',
+              marginLeft: 10,
+            }}>
+            Online Controls:
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: '95%',
+              alignSelf: 'center',
+              marginVertical: 10,
+            }}>
+            <Text
+              style={{
+                fontSize: 14,
+                fontFamily: Family.Medium,
+                color: Colors.gray,
+              }}>
+              Chat Mode (₹ {Rate}/min)
+            </Text>
+            <Switch
+              trackColor={{false: '#767577', true: '#009378'}}
+              thumbColor={'#FFFFFF'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleChat}
+              value={isChat}
+            />
+          </View>
+
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: '95%',
+              alignSelf: 'center',
+              marginVertical: 10,
+            }}>
+            <Text
+              style={{
+                fontSize: 14,
+                fontFamily: Family.Medium,
+                color: Colors.gray,
+              }}>
+              Voice Call (₹ {Rate}/min)
+            </Text>
+            <Switch
+              trackColor={{false: '#767577', true: '#009378'}}
+              thumbColor={'#FFFFFF'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleVoice}
+              value={isVoice}
+            />
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              width: '95%',
+              alignSelf: 'center',
+              marginVertical: 10,
+            }}>
+            <Text
+              style={{
+                fontSize: 14,
+                fontFamily: Family.Medium,
+                color: Colors.gray,
+              }}>
+              Video Mode (₹ {Rate}/min)
+            </Text>
+            <Switch
+              trackColor={{false: '#767577', true: '#009378'}}
+              thumbColor={'#FFFFFF'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleVedio}
+              value={isVideo}
+            />
+          </View>
+        </View>
+
         <View
           style={{
             width: '98%',

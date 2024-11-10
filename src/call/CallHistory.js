@@ -5,6 +5,7 @@ import Colors from '../Utitlies/Colors';
 import CallItem from './CallItem';
 import Global from '../Utitlies/Global';
 import {UserAuthContext} from '../Context/UserAuthContext';
+import Nodatafound from '../component/Nodatafound';
 
 const CallHistory = ({navigation}) => {
   const {User} = useContext(UserAuthContext);
@@ -27,6 +28,8 @@ const CallHistory = ({navigation}) => {
       <View style={{width: '95%', alignSelf: 'center', marginVertical: 10}}>
         <FlatList
           data={Data}
+          inverted={true}
+          ListEmptyComponent={<Text style={{color:'black',textAlign:'center'}}>No data found</Text>}
           renderItem={({item, index}) => {
             return <CallItem item={item} navigation={navigation} />;
           }}
