@@ -13,6 +13,7 @@ import Colors from '../Utitlies/Colors';
 import Family from '../Utitlies/Family';
 import {PencilSquareIcon} from 'react-native-heroicons/solid';
 import Loader from '../component/Loader';
+import { globalStyles } from '../utils/GlobalStyles';
 
 const Profile = ({navigation}) => {
   const [Data, setData] = useState({});
@@ -210,7 +211,11 @@ const Profile = ({navigation}) => {
                 {Data.instagram == '' ? 'Link not found' : Data.instagram}
               </Text>
             </View>
+            <TouchableOpacity style={{paddingHorizontal:20,paddingVertical:5,borderRadius:5,justifyContent:'center',alignItems:'center',backgroundColor:'red'}} onPress={()=>navigation.replace('Login')}>
+            <Text style={[globalStyles.text,{color:'white'}]}>Log Out</Text>
+          </TouchableOpacity>
           </View>
+          
         </ScrollView>
       )}
     </>

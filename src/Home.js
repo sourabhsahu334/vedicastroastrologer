@@ -16,6 +16,8 @@ import Family from './Utitlies/Family';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 import Global from './Utitlies/Global';
+import theme from './utils/theme';
+import { sendNotification } from './Acceptpop';
 
 const Home = ({navigation}) => {
   const [isVoice, setisVoice] = useState(false);
@@ -23,7 +25,10 @@ const Home = ({navigation}) => {
   const [userId, setuserId] = useState(false);
   const [Data, setData] = useState({});
   const [Rate, setRate] = useState('');
-
+  useEffect(()=>{
+    console.log('sdf')
+  //  sendNotification('crPWf1-CRhaB4FJZviiB-h:APA91bG6mcs29paKg4DhYrkixCr2T89S0ckPxmH2wvVAIKkzG-vXi1r-PLDzt6CB2SijCj_2edwfBVgIRHGOS1BznlfQlcrPst19yz0TzGcUaGfWxRwhV4s','','','','','',)
+  },[])
   const toggleChat = () => {
     fetch(
       Global.BASE_URL +
@@ -51,7 +56,7 @@ const Home = ({navigation}) => {
         `onlineStatus&status=video_status&type=${
           isVideo ? 'offline' : 'online'
         }&astrologerId=${userId}`,
-    ).then((res)=>console.log(res)).catch((re)=>console.log(re))
+    ).then((res)=>console.log(res?.data)).catch((re)=>console.log(re))
     setIsVideo(previousState => !previousState);
   };
 
@@ -110,6 +115,8 @@ const Home = ({navigation}) => {
           setRate(data.response.rate);
           setisChat(data.response.chat == 'offline' ? false : true);
           setisVoice(data.response.call == 'offline' ? false : true);
+          setIsVideo(data.response.video == 'offline' ? false : true)
+
         });
       });
     });
@@ -231,7 +238,7 @@ const Home = ({navigation}) => {
             style={{
               fontSize: 16,
               fontFamily: Family.Regular,
-              color: Colors.primary,
+              color: theme.colors.background,
               marginTop: 5,
               textDecorationLine: 'underline',
               marginLeft: 10,
@@ -253,7 +260,7 @@ const Home = ({navigation}) => {
                 fontFamily: Family.Medium,
                 color: Colors.gray,
               }}>
-              Chat Mode (₹ {Rate}/min)
+              Chat (₹ {Rate}/min)
             </Text>
             <Switch
               trackColor={{false: '#767577', true: '#009378'}}
@@ -304,7 +311,7 @@ const Home = ({navigation}) => {
                 fontFamily: Family.Medium,
                 color: Colors.gray,
               }}>
-              Video Mode (₹ {Rate}/min)
+              Video Call (₹ {Rate}/min)
             </Text>
             <Switch
               trackColor={{false: '#767577', true: '#009378'}}

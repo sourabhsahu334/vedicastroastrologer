@@ -6,8 +6,8 @@ import {
   Image,
   Modal,
 } from 'react-native';
-import React, {useState, useCallback, useEffect, useContext} from 'react';
-import {GiftedChat, InputToolbar, Bubble} from 'react-native-gifted-chat';
+import React, {useState, useCallback, useEffect, useContext, useRef} from 'react';
+import {GiftedChat, InputToolbar, Bubble, Time, Send} from 'react-native-gifted-chat';
 import firestore from '@react-native-firebase/firestore';
 import {UserAuthContext} from '../Context/UserAuthContext';
 import Colors from '../Utitlies/Colors';
@@ -17,6 +17,12 @@ import {useNavigation} from '@react-navigation/native';
 import axios from 'axios';
 import Global from '../Utitlies/Global';
 import { http } from '../utils/AxiosInstance';
+import { RenderIcon } from '../component/RenderIcon';
+import theme from '../utils/theme';
+import { io } from 'socket.io-client'; // Import socket.io-client
+
+// Create socket instance
+const socket = io('https://astroasocket.onrender.com/');
 
 const ChatScreen = ({navigation, route}) => {
 
@@ -25,9 +31,81 @@ const ChatScreen = ({navigation, route}) => {
   const [isInputDisabled, setisInputDisabled] = useState(false);
   const [modal, setmodal] = useState(false);
   const userId = route?.params?.userid
-  const RoomId = route.params?.RoomId||"txn13552256" ;
+  const RoomId = route.params?.RoomId||"roomid123" ;
   const [data,setData]=useState()
   const Navigation = useNavigation();
+  const [welcomeMessageSent, setWelcomeMessageSent] = useState(false);
+  const typingTimeoutRef = useRef(null);
+  const [typing,setTyping]=useState(false)
+
+  useEffect(() => {
+    // Connect to the server and join the chat room
+    socket.emit('join', RoomId);
+    console.log('ssss',RoomId)
+    // Listen for typing events
+    socket.on('typing', ({ roomId, isTyping }) => {
+      if (roomId== roomId) {
+        setTyping(isTyping)
+        console.log(`${isTyping ? 'typing...' : 'not typing.'}`);
+        // You can implement a UI indicator for typing status here
+      }
+    });
+
+    return () => {
+      // Clean up listeners when the component unmounts
+      socket.off('typing');
+      socket.emit('leave', RoomId);
+    };
+  }, [RoomId, userId]);
+
+  const handleSend = (newMessages = []) => {
+    setMessages((prevMessages) => GiftedChat.append(prevMessages, newMessages));
+
+    // Emit stop-typing when a message is sent
+    socket.emit('stop-typing', RoomId, userId);
+  };
+
+  const handleTyping = (text) => {
+    if (text.length > 0) {
+      socket.emit('typing', RoomId,);
+
+      // Clear the timeout if already set
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+
+      // Emit stop-typing after 2 seconds of inactivity
+      typingTimeoutRef.current = setTimeout(() => {
+        socket.emit('stop-typing',RoomId, );
+      }, 2000);
+    } else {
+      // Emit stop-typing immediately if the input is cleared
+      socket.emit('stop-typing', RoomId,);
+    }
+  };
+
+useEffect(() => {
+  getProfile();
+
+  if (!welcomeMessageSent) {
+    onSend([{ _id: 1, text: "Welcome to Vedic Astro", createdAt: new Date(), user: { _id: 2, name: "Vedic Astro" } }]);
+    setWelcomeMessageSent(true);
+  }
+
+  const querySnapshot = firestore()
+    .collection('Room')
+    .doc(RoomId)
+    .collection('Message')
+    .orderBy('createdAt', 'desc');
+  querySnapshot.onSnapshot(snapshot => {
+    const allMessage = [];
+    snapshot.docs.map(snap => {
+      allMessage.push({...snap.data(), createdAt: new Date()});
+    });
+    setMessages(allMessage);
+  });
+}, []);
+
 
   useEffect(() => {
     getProfile()
@@ -60,6 +138,10 @@ const ChatScreen = ({navigation, route}) => {
       .add({...messages[0], createdAt: firestore.FieldValue.serverTimestamp()});
   }, []);
 
+  useEffect(()=>{
+  //  onSend()
+  },[RoomId])
+
   useEffect(() => {
     firestore()
       .collection('Room')
@@ -77,9 +159,9 @@ const ChatScreen = ({navigation, route}) => {
   const getProfile = async () => {
    try {
     const {data}= await axios.get(`https://www.radicalone.co.in/vedicastro/activity.php?method=myProfile&userId=${userId||10}`)
-    console.log(data,"s")
+    // console.log(data,"s")
     setData(data.response);
-    console.log(data?.response.name)
+    // console.log(data?.response.name)
    } catch (error) {
     console.log(error)
    }
@@ -106,6 +188,7 @@ const ChatScreen = ({navigation, route}) => {
      console.log(error,"kun ivew");
     }
    };
+   
 
   const renderInputToolbar = props => {
     const {containerStyle, ...inputToolbarProps} = props;
@@ -123,7 +206,7 @@ const ChatScreen = ({navigation, route}) => {
         </Text>
       </View>
     ) : (
-      <InputToolbar {...inputToolbarProps} containerStyle={{color:"black",backgroundColor:"rgba(0,0,0,.5)"}} />
+      <InputToolbar {...inputToolbarProps} containerStyle={{color:"black",backgroundColor:"white"}} />
     );
   };
 
@@ -132,7 +215,7 @@ const ChatScreen = ({navigation, route}) => {
       <View
         style={{
           backgroundColor: Colors.light,
-          padding: 10,
+          padding: 12,
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -145,15 +228,18 @@ const ChatScreen = ({navigation, route}) => {
           <TouchableOpacity onPress={() => navigation.navigate('Home')}>
             <ArrowLeftIcon color={Colors.dark} size={24} />
           </TouchableOpacity>
-          <Text
+         <View style={{marginLeft:12}}>
+         <Text
             style={{
               fontSize: 16,
               color: Colors.gray,
-              marginLeft: 10,
+              // marginLeft: 10,
               fontFamily: Family.Medium,
             }}>
             {data?.name}
           </Text>
+          {typing&&<Text style={{fontSize:11,marginTop:-10}}>'Typing..'</Text>}
+         </View>
         </View>
         <TouchableOpacity
           style={{
@@ -182,18 +268,59 @@ const ChatScreen = ({navigation, route}) => {
           _id: User,
         }}
         renderInputToolbar={renderInputToolbar}
-        renderBubble={props => {
+        onInputTextChanged={(text)=>handleTyping(text)}
+        
+        renderSend={(props) => (
+          <Send
+            {...props}
+            containerStyle={{
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingHorizontal: 10,
+              // backgroundColor: 'yellow', // Yellow background for the send button
+              borderRadius: 5, // Optional: round edges for the button
+              marginRight: 10, // Optional: spacing to the right
+              height: 45, // Adjust height as needed
+            }}
+          >
+            {/* <Text style={{ color: 'black', fontWeight: 'bold' }}>Send</Text> */}
+            <RenderIcon iconfrom={"MaterialIcons"} iconName={'send'} iconColor={theme.colors.yellow} iconSize={20}/>
+          </Send>
+        )}
+                renderBubble={props => {
           return (
             <Bubble
               {...props}
+              renderTime={timeProps => (
+                <Time
+                  {...timeProps}
+                  timeTextStyle={{
+                    right: {
+                      color: Colors.white, // Time color for sent messages
+                    },
+                    left: {
+                      color: Colors.dark, // Time color for received messages
+                    },
+                  }}
+                />
+              )}
+              
               wrapperStyle={{
                 right: {
                   backgroundColor: Colors.primary,
+                  
                 },
                 left: {
                   backgroundColor: Colors.light,
+                  marginLeft: 10, // Set to 0 to remove any extra space on the left side
+  alignSelf: 'flex-start', 
                 },
               }}
+              textStyle={{
+                right: {
+                  color: Colors.white, // Change this to your desired text color for sent messages
+                },
+                }}
             />
           );
         }}

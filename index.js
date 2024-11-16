@@ -8,7 +8,7 @@ import {name as appName} from './app.json';
 import messaging from '@react-native-firebase/messaging';
 // import { Provider } from 'react-redux';
 // import store from './Src/redux/store';
-import notifee ,{EventType} from "@notifee/react-native"
+import notifee ,{AndroidImportance, EventType} from "@notifee/react-native"
 
 
 async function onMessageReceived(message) {
@@ -16,11 +16,17 @@ async function onMessageReceived(message) {
   const channelId = await notifee.createChannel({
     id: 'default',
     name: 'Default Channel',
+    sound: 'sound', // Name of the sound file (without the file extension)
+    importance: AndroidImportance.HIGH, // Importance level
   });
   notifee.displayNotification({title: message?.notification.title,
   body:message.notification.body,
   android: {
     channelId,
+    android: {
+      // channelId, // The ID of the channel created earlier
+      sound: 'sound', // This is optional; if not specified, the channel sound is used
+    },
     actions: [
       {
         title: 'Yes',
