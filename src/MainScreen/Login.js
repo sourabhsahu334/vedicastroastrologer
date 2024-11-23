@@ -29,10 +29,10 @@ const Login = ({navigation}) => {
       
       const result = await userLogin(Mobile, Password, player_id);
       if (result.response.status === 1) {
-        navigation.navigate('Home');
+        navigation.replace('Home');
         AsyncStorage.setItem('userId', result.response.astrologerId);
       } else {
-        Alert.alert(result.response.message);
+        Alert.alert('eerr');
       }
       setLaoding(false);
     }

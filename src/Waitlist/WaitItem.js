@@ -49,7 +49,7 @@ const WaitItem = ({item, navigation, getDoucumentId, getWaitList}) => {
     getWaitList();
   };
 
-  const onaccept = value => {
+  const onaccept = (value,type) => {
     AsyncStorage.getItem('userId').then(val => {
       const now = firestore.Timestamp.now();
       const ts = firestore.Timestamp.fromMillis(now.toMillis() - 30000);
@@ -58,15 +58,20 @@ const WaitItem = ({item, navigation, getDoucumentId, getWaitList}) => {
         .doc(val)
         .collection('connection')
         .where('createdAt', '>', ts);
+        // console.log(querySnapshot)
       querySnapshot.onSnapshot(snapshot => {
         snapshot.docs.map(value => {
           const {userId, id, AstrologerId, RoomId} = value.data();
+          console.log('ss')
+
           if (value.data() !== null) {
-            navigation.navigate('Accept', {
+            console.log('ssss')
+            navigation.navigate('AcceptPop', {
               userId: value,
               astrologerDocumentid: id,
               AstrologerId: AstrologerId,
               RoomId: RoomId,
+              type:type
             });
           }
         });
@@ -175,9 +180,9 @@ const WaitItem = ({item, navigation, getDoucumentId, getWaitList}) => {
             }}
             onPress={() => {
               // getDoucumentId(item.userId);
-              navigation.navigate('AcceptPop',{loading:true})
+              // navigation.navigate('AcceptPop',{loading:true,type:item?.type,})
               sendNotification(item.userToken, item.roomId,User,item.astrologerToken,item.type||'call',null,data?.name);
-              // onaccept(item.userId);
+              onaccept(item.userId,item.type);
             }}>
             <Text
               style={{

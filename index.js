@@ -1,68 +1,64 @@
-/**
- * @format
- */
-
-import {AppRegistry} from 'react-native';
-import App, { navigate } from './App';
-import {name as appName} from './app.json';
+import { AppRegistry, AppState } from 'react-native';
+import App from './App';
+import { name as appName } from './app.json';
 import messaging from '@react-native-firebase/messaging';
-// import { Provider } from 'react-redux';
-// import store from './Src/redux/store';
-import notifee ,{AndroidImportance, EventType} from "@notifee/react-native"
+import notifee, { AndroidImportance, EventType } from '@notifee/react-native';
 
+// Track app state
+let currentAppState = 'active';
+AppState.addEventListener('change', (nextAppState) => {
+  currentAppState = nextAppState;
+});
 
+// Function to handle notifications
 async function onMessageReceived(message) {
-  // console.log("message",message)
+  if (currentAppState === 'active') {
+    // If the app is open, do not display the notification
+    console.log('Notification suppressed as app is in foreground:', message);
+    return;
+  }
+
   const channelId = await notifee.createChannel({
     id: 'default',
     name: 'Default Channel',
     sound: 'sound', // Name of the sound file (without the file extension)
     importance: AndroidImportance.HIGH, // Importance level
+    bypassDnd: true, // Explicitly allow this notification to bypass DND
   });
-  notifee.displayNotification({title: message?.notification.title,
-  body:message.notification.body,
-  android: {
-    channelId,
+
+  // Display notification only if app is not in foreground
+  await notifee.displayNotification({
+    title: message?.notification?.title,
+    body: message?.notification?.body,
     android: {
-      // channelId, // The ID of the channel created earlier
-      sound: 'sound', // This is optional; if not specified, the channel sound is used
+      channelId,
+      sound: 'sound', // Name of the sound file (without the file extension)
+      importance: AndroidImportance.HIGH,
+      bypassDnd: true, // Allow to bypass DND
     },
-    actions: [
-      {
-        title: 'Yes',
-        pressAction: {
-          id: 'yes',
-          mainComponent: 'Default Channel',
-          shouldFireEvent: false, // Do not clear notification upon interaction
-
-
-        },
-      },
-      {
-        title: 'No',
-        pressAction: {
-          id: 'no',
-          shouldFireEvent: false, // Do not clear notification upon interaction
-
-        },
-      },
-    ],
-  },});
+  });
 }
+
+// Handle foreground events (e.g., notification actions)
 notifee.onForegroundEvent(async ({ type, detail }) => {
-  if (type === EventType.ACTION_PRESS &&  detail.pressAction.id=="yes") {
-   console.log(detail?.pressAction,EventType.ACTION_PRESS,type)
-  //  navigate("Profile",{AstrologerId:5})
+  if (type === EventType.ACTION_PRESS) {
+    if (detail?.pressAction?.id === 'yes') {
+      console.log('Yes action pressed', detail);
+      // Perform navigation or other actions here
+    }
   }
 });
-notifee.onBackgroundEvent(async ({ type, detail }) => {
-  // if (type === EventType.ACTION_PRESS && detail.pressAction.id) {
-   console.log(detail?.notification?.data?.id,detail)
-  //  navigate("Profile",{AstrologerId:5,})
-  // }
-});
-messaging().onMessage(onMessageReceived);
 
+// Handle background notification events
+notifee.onBackgroundEvent(async ({ type, detail }) => {
+  console.log('Background event detail:', detail);
+  if (type === EventType.ACTION_PRESS && detail?.pressAction?.id === 'yes') {
+    // Perform navigation or other background actions here
+  }
+});
+
+// Firebase message handlers
+messaging().onMessage(onMessageReceived);
 messaging().setBackgroundMessageHandler(onMessageReceived);
 
 AppRegistry.registerComponent(appName, () => App);

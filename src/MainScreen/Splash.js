@@ -4,25 +4,15 @@ import * as Animatable from 'react-native-animatable';
 import Colors from '../Utitlies/Colors';
 import Loader from '../component/Loader';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigationState } from '@react-navigation/native';
 
 const Splash = ({navigation}) => {
   const [isLoading, setisLoading] = useState(true);
 
-  const checkUser = () => {
-    AsyncStorage.getItem('userId').then(value => {
-      if (value == null) {
-        navigation.navigate('Onboarding');
-      } else {
-        navigation.navigate('Home');
-      }
-    });
-  };
+  
+  // const currentRoute = useNavigationState(state => state.routes[state.index].name);
+  // console.log(currentRoute)
 
-  useEffect(() => {
-    setTimeout(() => {
-      checkUser();
-    }, 2000);
-  }, []);
 
   return (
     <>

@@ -131,16 +131,19 @@ const App = () => {
             navigate('AcceptPop',{docid:remoteMessage?.data?.id,userId:remoteMessage?.data?.userId,roomId:remoteMessage?.data?.roomId,token:remoteMessage?.data?.myToken,type:remoteMessage?.data?.type})
 
       });
-    // messaging()
-    //   .getInitialNotification()
-    //   .then(remoteMessage => {
-    //     if (remoteMessage) {
-    //       console.log('Notification caused app to open from quit state:',remoteMessage);
-    //       // navigate("Profile")
-    //       // alert('new');
-    //     }
-    //     // setLoading(false);
-    //   });
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          // alert(`quite mode message ${JSON.stringify(remoteMessage)}`);
+          navigate('AcceptPop',{docid:remoteMessage?.data?.id,userId:remoteMessage?.data?.userId,roomId:remoteMessage?.data?.roomId,token:remoteMessage?.data?.myToken,type:remoteMessage?.data?.type})
+          navigate('AcceptPop',{docid:remoteMessage?.data?.id,userId:remoteMessage?.data?.userId,roomId:remoteMessage?.data?.roomId,token:remoteMessage?.data?.myToken,type:remoteMessage?.data?.type})
+
+          // navigate("Profile")
+          // alert('new');
+        }
+        // setLoading(false);
+      });
 
     const fetch = async () => {
       console.log('ffff')
@@ -242,7 +245,7 @@ const App = () => {
     <UserAuthContextProvider>
       <NavigationContainer ref={navigationRef}>
         <Stack.Navigator
-          initialRouteName="Splash"
+          initialRouteName="Home"
           screenOptions={{
             headerTitleStyle: {
               fontSize: 16,
