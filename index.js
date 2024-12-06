@@ -19,8 +19,8 @@ async function onMessageReceived(message) {
     sound: 'sound', // Name of the sound file (without the file extension)
     importance: AndroidImportance.HIGH, // Importance level
   });
-  notifee.displayNotification({title: message?.notification.title,
-  body:message.notification.body,
+  notifee.displayNotification({title: message?.notification?.title||'sdfsdf',
+  body:'bodu',
   android: {
     channelId,
     android: {
