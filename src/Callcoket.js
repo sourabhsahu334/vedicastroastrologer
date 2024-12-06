@@ -47,6 +47,7 @@ const CallCoket = ({ route, navigation }) => {
     socket.on('ice-candidate', handleReceiveIceCandidate);
 
     startLocalStream();
+    joinRoom()
 
     return () => {
       socket.off('offer', handleReceiveOffer);
@@ -146,6 +147,21 @@ const CallCoket = ({ route, navigation }) => {
           <Button title="View Kundli" onPress={viewkundli} />
         </View>
       </View>
+      <TouchableOpacity
+          onPress={()=>{callUser('astrologerid')}}
+          style={{
+            paddingHorizontal: 10,
+            paddingVertical: 3,
+            borderRadius: 5,
+            // backgroundColor: isSpeakerOn ? 'orange' : 'grey',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Text style={[globalStyles.text, { color: 'white' }]}>
+            Accept
+          </Text>
+        </TouchableOpacity>
       <View style={{ flexDirection: 'row', marginLeft: 'auto', marginTop: 15, marginRight: 20 }}>
         <TouchableOpacity
           onPress={toggleSpeaker}
@@ -163,7 +179,7 @@ const CallCoket = ({ route, navigation }) => {
           </Text>
         </TouchableOpacity>
       </View>
-
+     
       <TouchableOpacity
         onPress={endCall}
         style={{

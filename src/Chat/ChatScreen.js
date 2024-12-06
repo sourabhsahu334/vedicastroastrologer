@@ -87,10 +87,10 @@ const ChatScreen = ({navigation, route}) => {
 useEffect(() => {
   getProfile();
 
-  if (!welcomeMessageSent) {
-    onSend([{ _id: 1, text: "Welcome to Vedic Astro", createdAt: new Date(), user: { _id: 2, name: "Vedic Astro" } }]);
-    setWelcomeMessageSent(true);
-  }
+  // if (!welcomeMessageSent) {
+  //   onSend([{ _id: 1, text: "Welcome to Vedic Astro", createdAt: new Date(), user: { _id: 2, name: "Vedic Astro" } }]);
+  //   setWelcomeMessageSent(true);
+  // }
 
   const querySnapshot = firestore()
     .collection('Room')
@@ -238,7 +238,7 @@ useEffect(() => {
             }}>
             {data?.name}
           </Text>
-          {typing&&<Text style={{fontSize:11,marginTop:-10}}>'Typing..'</Text>}
+          {typing&&<Text style={{fontSize:11,marginTop:-10,color:'black'}}>'Typing..'</Text>}
          </View>
         </View>
         <TouchableOpacity

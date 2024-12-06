@@ -18,6 +18,7 @@ import firestore from '@react-native-firebase/firestore';
 import Global from './Utitlies/Global';
 import theme from './utils/theme';
 import { sendNotification } from './Acceptpop';
+import Splash from './MainScreen/Splash';
 
 const Home = ({navigation}) => {
   const [isVoice, setisVoice] = useState(false);
@@ -25,6 +26,35 @@ const Home = ({navigation}) => {
   const [userId, setuserId] = useState(false);
   const [Data, setData] = useState({});
   const [Rate, setRate] = useState('');
+  const [isLoading, setisLoading] = useState(true);
+  
+
+  const checkUser = async () => {
+    try {
+      const value = await AsyncStorage.getItem('userId');
+      if (value == null) {
+        navigation.navigate('Onboarding');
+      } else {
+        // navigation.navigate('Home');
+        setisLoading(false)
+      }
+    } catch (error) {
+      console.error('Error checking user:', error);
+    }
+  };
+  // const currentRoute = useNavigationState(state => state.routes[state.index].name);
+  // console.log(currentRoute)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      // Check if we're on the Splash screen before navigating
+      // if (currentRoute === 'Splash') {
+        checkUser();
+      // }
+    }, 2000);
+
+    return () => clearTimeout(timer); // Clear timeout on unmount to avoid memory leaks
+  }, []);
+
   useEffect(()=>{
     console.log('sdf')
   //  sendNotification('crPWf1-CRhaB4FJZviiB-h:APA91bG6mcs29paKg4DhYrkixCr2T89S0ckPxmH2wvVAIKkzG-vXi1r-PLDzt6CB2SijCj_2edwfBVgIRHGOS1BznlfQlcrPst19yz0TzGcUaGfWxRwhV4s','','','','','',)
@@ -153,6 +183,7 @@ const Home = ({navigation}) => {
   }, []);
 
   return (
+    isLoading?<Splash/>:
     <>
       <Header navigation={navigation} />
       <ScrollView style={{flex: 1}} showsVerticalScrollIndicator={false}>

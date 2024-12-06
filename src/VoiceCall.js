@@ -10,8 +10,9 @@ import Global from './Utitlies/Global';
 import Family from './Utitlies/Family';
 
 const VoiceCall = ({navigation, route}) => {
-  const {RoomId, userId, name} = route.params;
-
+  const userId = route.params?.userId;
+  const name = route?.params?.name
+  const RoomId =route?.params?.RoomId||"roomid123"
   console.log(RoomId);
   const viewkundli = async () => {
     const response = await fetch(

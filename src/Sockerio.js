@@ -1,134 +1,7 @@
-// import React, { useEffect, useRef, useState } from 'react';
-// import { View, Button, StyleSheet, Text, TextInput } from 'react-native';
-// import { RTCPeerConnection, RTCSessionDescription, RTCIceCandidate, mediaDevices, RTCView } from 'react-native-webrtc';
-// import io from 'socket.io-client';
-// import { RenderIcon } from './component/RenderIcon';
 
-// const socket = io('https://astroasocket.onrender.com');
-// const ICE_SERVERS = {
-//   iceServers: [
-//     { urls: 'stun:stun.l.google.com:19302' },
-//     { urls: 'stun:stun1.l.google.com:19302' },
-//     { urls: 'stun:stun2.l.google.com:19302' },
-//   ],
-// };
-
-// const VideoSocket = ({route}) => {
-//   const type = route?.params?.type;
-//   const [localStream, setLocalStream] = useState(null);
-//   const [remoteStream, setRemoteStream] = useState(null);
-//   const peerConnection = useRef(new RTCPeerConnection(ICE_SERVERS));
-//   const roomId = route?.params?.RoomId||"roomid123"
-//   const [ status,setStatus]=useState();
- 
-//   useEffect(() => {
-//     socket.on('offer', handleReceiveOffer);
-//     socket.on('answer', handleReceiveAnswer);
-//     socket.on('ice-candidate', handleReceiveIceCandidate);
-
-//     startLocalStream();
-
-//     return () => {
-//       socket.off('offer', handleReceiveOffer);
-//       socket.off('answer', handleReceiveAnswer);
-//       socket.off('ice-candidate', handleReceiveIceCandidate);
-//     };
-//   }, []);
-
-
-
-//   const joinRoom = () => {
-//     socket.emit('join', roomId);
-//   };
-
-//   const leaveRoom = () => {
-//     socket.emit('leave', roomId);
-//   };
-
-//   const startLocalStream = async () => {
-//     const constraints = { audio: true,video:true };
-//     const stream = await mediaDevices.getUserMedia(constraints);
-//     setLocalStream(stream);
-//     stream.getTracks().forEach(track => {
-//       peerConnection.current.addTrack(track, stream);
-//     });
-//   };
-
-//   const callUser = async (userId) => {
-//     const offer = await peerConnection.current.createOffer();
-//     await peerConnection.current.setLocalDescription(new RTCSessionDescription(offer));
-//     socket.emit('offer', { roomId, target: userId, callerId: socket.id, offer });
-
-//     peerConnection.current.onicecandidate = (event) => {
-//       if (event.candidate) {
-//         socket.emit('ice-candidate', { roomId, target: userId, candidate: event.candidate });
-//       }
-//     };
-
-//     peerConnection.current.ontrack = (event) => {
-//       if (event.streams && event.streams[0]) {
-//         setStatus(true)
-//         setRemoteStream(event.streams[0]);
-//       }
-//     };
-//   };
-
-//   const handleReceiveOffer = async (data) => {
-//     await peerConnection.current.setRemoteDescription(new RTCSessionDescription(data.offer));
-//     const answer = await peerConnection.current.createAnswer();
-//     await peerConnection.current.setLocalDescription(new RTCSessionDescription(answer));
-//     socket.emit('answer', { roomId, target: data.callerId, answer });
-//   };
-
-//   const handleReceiveAnswer = async (data) => {
-//     await peerConnection.current.setRemoteDescription(new RTCSessionDescription(data.answer));
-//   };
-
-//   const handleReceiveIceCandidate = (data) => {
-//     const candidate = new RTCIceCandidate(data.candidate);
-//     peerConnection.current.addIceCandidate(candidate);
-//   };
-
-//   useEffect(()=>{
-//     joinRoom();
-//     callUser();
-//       },[]);
-
-//   return (
-//     <View style={[styles.container,{backgroundColor:"black"}]}>
-//       {/* <Button title="Join Room" onPress={() => joinRoom()} /> */}
-//       {/* <Button title="Leave Room" onPress={leaveRoom} /> */}
-//       <Button title="Call Accept" onPress={() => callUser('targetUserId')} />
-//       {/* <TextInput color={"white"} value={roomId}  onChangeText={(e)=>setRoomId(e)}/> */}
-//       {localStream && <RTCView streamURL={localStream.toURL()} style={{height:100,width:100,position:'absolute',top:10,left:10}} />}
-//       {remoteStream && <RTCView streamURL={remoteStream.toURL()} style={styles.rtcView} />}
-//       <View style={{height:60, justifyContent:"center",alignItems:'center',width:60,backgroundColor:"red",borderRadius:50,marginTop:'auto',opacity:.8,marginBottom:20}}>
-//       <RenderIcon iconColor={"black"} iconfrom={"MaterialCommunityIcons"} iconSize={30} iconName={'phone'}/>
-
-//       </View>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//   },
-//   rtcView: {
-//     width: 350,
-//     height: 500,
-//     marginTop:70,
-//     // position:"absolute",
-//     backgroundColor: 'black',
-//   },
-// });
-
-// export default VideoSocket;
 
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Button, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, Button, StyleSheet, TouchableOpacity, Text, Alert } from 'react-native';
 import { RTCPeerConnection, RTCSessionDescription, RTCIceCandidate, mediaDevices, RTCView } from 'react-native-webrtc';
 import io from 'socket.io-client';
 import { RenderIcon } from './component/RenderIcon';
@@ -136,6 +9,8 @@ import { navigate } from '../App';
 import Global from './Utitlies/Global';
 import Header from './component/Header';
 import { globalStyles } from './utils/GlobalStyles';
+import InCallManager from 'react-native-incall-manager'; // Import InCallManager
+
 
 const socket = io('https://astroasocket.onrender.com');
 const ICE_SERVERS = {
@@ -152,6 +27,8 @@ const VideoSocket = ({ route,navigation }) => {
   const [remoteStream, setRemoteStream] = useState(null);
   const peerConnection = useRef(new RTCPeerConnection(ICE_SERVERS));
   const roomId = route?.params?.RoomId || 'roomid123';
+  const [isSpeakerOn, setIsSpeakerOn] = useState(false); // State for speaker toggle
+
   const [status, setStatus] = useState(false);
   const [data,setData]=useState();
    const [userdata,setUsetdata]=useState();
@@ -191,16 +68,27 @@ const VideoSocket = ({ route,navigation }) => {
     socket.on('offer', handleReceiveOffer);
     socket.on('answer', handleReceiveAnswer);
     socket.on('ice-candidate', handleReceiveIceCandidate);
-
+    socket.on('user-left', handleUserLeft);
     startLocalStream();
 
     return () => {
       socket.off('offer', handleReceiveOffer);
       socket.off('answer', handleReceiveAnswer);
       socket.off('ice-candidate', handleReceiveIceCandidate);
-      cleanupConnection();  // Ensure we clean up on unmount
+      socket.off('user-left', handleUserLeft);
+      // cleanupConnection();  // Ensure we clean up on unmount
+
     };
   }, []);
+
+  const handleUserLeft=async()=>{
+    try {
+      Alert.alert('User has been ended a call')
+      cleanupConnection()
+    } catch (error) {
+      
+    }
+  }
 
   const cleanupConnection = () => {
     // Close the peer connection
@@ -215,7 +103,7 @@ const VideoSocket = ({ route,navigation }) => {
 
     // Leave the socket room
     leaveRoom();
-    navigate('Home')
+    navigation.replace('Home')
   };
 
   const joinRoom = () => {
@@ -223,6 +111,7 @@ const VideoSocket = ({ route,navigation }) => {
   };
 
   const leaveRoom = () => {
+    // socket.emit('user-left', roomId);
     socket.emit('leave', roomId);
     socket.disconnect();
   };
@@ -271,6 +160,11 @@ const VideoSocket = ({ route,navigation }) => {
     peerConnection.current.addIceCandidate(candidate);
   };
 
+  const toggleSpeaker = () => {
+    setIsSpeakerOn(!isSpeakerOn);
+    InCallManager.setSpeakerphoneOn(!isSpeakerOn);
+  };
+
   const endCall = () => {
     cleanupConnection();  // End call and clean up resources
   };
@@ -291,9 +185,7 @@ const VideoSocket = ({ route,navigation }) => {
     initiateCalls();
 
     // Cleanup on component unmount
-    return () => {
-      cleanupConnection();
-    };
+ 
   }, []);
 
   return (
@@ -312,6 +204,7 @@ const VideoSocket = ({ route,navigation }) => {
       {localStream && (
         <RTCView streamURL={localStream.toURL()} style={{ height: 100, width: 100, position: 'absolute', top: 60,left:0 }} />
       )}
+      
       {remoteStream && 
       <View>
         {/* <Text style={[globalStyles.text,{color:'white'}]}>Connected</Text> */}
@@ -320,6 +213,23 @@ const VideoSocket = ({ route,navigation }) => {
             <RenderIcon iconColor={"black"} iconfrom={"MaterialCommunityIcons"} iconSize={30} iconName={'phone'}/>
 
       </TouchableOpacity>
+      <View style={{ }}>
+        <TouchableOpacity
+          onPress={toggleSpeaker}
+          style={{
+            paddingHorizontal: 10,
+            paddingVertical: 3,
+            borderRadius: 5,
+            backgroundColor: isSpeakerOn ? 'orange' : 'grey',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Text style={[globalStyles.text, { color: 'white' }]}>
+            {isSpeakerOn ? 'Speaker On' : 'Speaker Off'}
+          </Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };

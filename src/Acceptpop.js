@@ -70,7 +70,7 @@ const Acceptpop = ({route,navigation}) => {
     messaging().onMessage(async remoteMessage => {
       console.log('A new FCM message arrived!', remoteMessage);
       if(loading){
-        ToastAndroid.show('User have started a chat', ToastAndroid.LONG);
+        ToastAndroid.show(`User have started a communication`, ToastAndroid.LONG);
         if(type=='call'){
           navigation.replace("CallScreen",{RoomId:roomid,userid:userid}); 
         }    
@@ -87,11 +87,17 @@ const Acceptpop = ({route,navigation}) => {
 
     messaging().setBackgroundMessageHandler(async remoteMessage => {
       if(type=='call'){
-        navigation.replace("CallScreen",{RoomId:roomid}); 
-      }    
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'CallScreen', params: { RoomId: roomid } }],
+        });
+              }    
       if(type=='video'){
-        navigation.replace("videoScreen",{RoomId:roomid}); 
-      }    
+        navigation.reset({
+          index: 0,
+          routes: [{ name: 'VideoScreen', params: { RoomId: roomid } }],
+        });
+              }    
       if(type=="chat"){
         navigation.replace("ChatScreen",{RoomId:roomid}); 
 
