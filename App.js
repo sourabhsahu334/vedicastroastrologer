@@ -37,6 +37,7 @@ import axios from 'axios';
 import Acceptpop from './src/Acceptpop';
 import CallCoket from './src/Callcoket';
 import VideoSocket from './src/Sockerio';
+import notifee, { AndroidImportance, EventType } from '@notifee/react-native';
 export const navigationRef = React.createRef();
 
 export function navigate(name, params) {
@@ -113,7 +114,7 @@ const App = () => {
     messaging().onMessage(async remoteMessage => {
       console.log('A new FCM message arrived!', remoteMessage);
       AsyncStorage.setItem(remoteMessage?.data?.roomId,JSON.stringify(remoteMessage?.data))
-      navigate('AcceptPop',{docid:remoteMessage?.data?.id,userId:remoteMessage?.data?.userId,roomId:remoteMessage?.data?.roomId,token:remoteMessage?.data?.myToken,type:remoteMessage?.data?.type})
+      navigate('AcceptPop',{docid:remoteMessage?.data?.docid,userId:remoteMessage?.data?.userId,roomId:remoteMessage?.data?.roomId,token:remoteMessage?.data?.myToken,type:remoteMessage?.data?.type})
       // You can show an alert or process the message here
     });
     messaging().onNotificationOpenedApp(remoteMessage => {
@@ -121,14 +122,24 @@ const App = () => {
       AsyncStorage.setItem(remoteMessage?.data?.roomId,JSON.stringify(remoteMessage?.data))
 
       console.log('Notification caused app to open from background state',remoteMessage);
-      navigate('AcceptPop',{docid:remoteMessage?.data?.id,userId:remoteMessage?.data?.userId,roomId:remoteMessage?.data?.roomId,token:remoteMessage?.data?.myToken,type:remoteMessage?.data?.type})
+      navigate('AcceptPop',{docid:remoteMessage?.data?.docid,userId:remoteMessage?.data?.userId,roomId:remoteMessage?.data?.roomId,token:remoteMessage?.data?.myToken,type:remoteMessage?.data?.type})
       // alert('new meeage');
     });
 
           messaging().setBackgroundMessageHandler(async remoteMessage => {
             AsyncStorage.setItem(remoteMessage?.data?.roomId,JSON.stringify(remoteMessage?.data))
-
-            navigate('AcceptPop',{docid:remoteMessage?.data?.id,userId:remoteMessage?.data?.userId,roomId:remoteMessage?.data?.roomId,token:remoteMessage?.data?.myToken,type:remoteMessage?.data?.type})
+           console.log(remoteMessage,"remotex")
+           await notifee.displayNotification({
+            title: 'Request',
+            body: remoteMessage?.data?.message || 'Request user for chat',
+            android: {
+              channelId:'default',
+              sound: 'sound', // Name of the sound file (without the file extension)
+              importance: AndroidImportance.HIGH,
+              bypassDnd: true, // Allow to bypass DND
+            },
+          });
+            navigate('AcceptPop',{docid:remoteMessage?.data?.docid,userId:remoteMessage?.data?.userId,roomId:remoteMessage?.data?.roomId,token:remoteMessage?.data?.myToken,type:remoteMessage?.data?.type})
 
       });
     messaging()
@@ -136,8 +147,8 @@ const App = () => {
       .then(remoteMessage => {
         if (remoteMessage) {
           // alert(`quite mode message ${JSON.stringify(remoteMessage)}`);
-          navigate('AcceptPop',{docid:remoteMessage?.data?.id,userId:remoteMessage?.data?.userId,roomId:remoteMessage?.data?.roomId,token:remoteMessage?.data?.myToken,type:remoteMessage?.data?.type})
-          navigate('AcceptPop',{docid:remoteMessage?.data?.id,userId:remoteMessage?.data?.userId,roomId:remoteMessage?.data?.roomId,token:remoteMessage?.data?.myToken,type:remoteMessage?.data?.type})
+          navigate('AcceptPop',{docid:remoteMessage?.data?.docid,userId:remoteMessage?.data?.userId,roomId:remoteMessage?.data?.roomId,token:remoteMessage?.data?.myToken,type:remoteMessage?.data?.type})
+          navigate('AcceptPop',{docid:remoteMessage?.data?.docid,userId:remoteMessage?.data?.userId,roomId:remoteMessage?.data?.roomId,token:remoteMessage?.data?.myToken,type:remoteMessage?.data?.type})
 
           // navigate("Profile")
           // alert('new');

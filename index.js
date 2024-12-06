@@ -12,11 +12,6 @@ AppState.addEventListener('change', (nextAppState) => {
 
 // Function to handle notifications
 async function onMessageReceived(message) {
-  if (currentAppState === 'active') {
-    // If the app is open, do not display the notification
-    console.log('Notification suppressed as app is in foreground:', message);
-    return;
-  }
 
   const channelId = await notifee.createChannel({
     id: 'default',
@@ -26,8 +21,8 @@ async function onMessageReceived(message) {
   });
 
   await notifee.displayNotification({
-    title: message?.notification?.title || 'Default Title',
-    body: message?.notification?.body || 'Default Body',
+    title: message?.notification?.title || 'Request',
+    body: message?.notification?.body || 'Request user for chat',
     android: {
       channelId,
       sound: 'sound', // Name of the sound file (without the file extension)

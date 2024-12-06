@@ -296,7 +296,7 @@ useEffect(() => {
                   {...timeProps}
                   timeTextStyle={{
                     right: {
-                      color: Colors.white, // Time color for sent messages
+                      color: Colors.dark, // Time color for sent messages
                     },
                     left: {
                       color: Colors.dark, // Time color for received messages
@@ -318,7 +318,7 @@ useEffect(() => {
               }}
               textStyle={{
                 right: {
-                  color: Colors.white, // Change this to your desired text color for sent messages
+                  color: 'black', // Change this to your desired text color for sent messages
                 },
                 }}
             />

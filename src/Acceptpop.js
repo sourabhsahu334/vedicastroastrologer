@@ -67,42 +67,7 @@ const Acceptpop = ({route,navigation}) => {
     const [ valid,setValid]=useState(false)
     const [ astrologerId,setastrologerId]=useState();
 
-    messaging().onMessage(async remoteMessage => {
-      console.log('A new FCM message arrived!', remoteMessage);
-      if(loading){
-        ToastAndroid.show(`User have started a communication`, ToastAndroid.LONG);
-        if(type=='call'){
-          navigation.replace("CallScreen",{RoomId:roomid,userid:userid}); 
-        }    
-        if(type=='video'){
-          navigation.replace("VideoScreen",{RoomId:roomid,userid:userid}); 
-        }    
-        if(type=="chat"){
-          navigation.replace("ChatScreen",{RoomId:roomid,userid:userid}); 
   
-        } // You
-
-      }
-    });
-
-    messaging().setBackgroundMessageHandler(async remoteMessage => {
-      if(type=='call'){
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'CallScreen', params: { RoomId: roomid } }],
-        });
-              }    
-      if(type=='video'){
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'VideoScreen', params: { RoomId: roomid } }],
-        });
-              }    
-      if(type=="chat"){
-        navigation.replace("ChatScreen",{RoomId:roomid}); 
-
-      } // You can show an alert or process the message here
-});
 
     const getData = async () => {
     try {
@@ -141,6 +106,22 @@ const Acceptpop = ({route,navigation}) => {
           status: 'accepted by Astrologer',
           createdAt: firestore.FieldValue.serverTimestamp(),
         });
+        if(type=='call'){
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'CallScreen', params: { RoomId: roomid } }],
+          });
+                }    
+        if(type=='video'){
+          navigation.reset({
+            index: 0,
+            routes: [{ name: 'VideoScreen', params: { RoomId: roomid } }],
+          });
+                }    
+        if(type=="chat"){
+          navigation.replace("ChatScreen",{RoomId:roomid}); 
+  
+        } // Y
         sendNotification(token, roomid,astrologerId,myOwnTokecn,type,docid,myData.name);
             setLoading(true)
       } catch (error) {
